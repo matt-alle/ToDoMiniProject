@@ -20,6 +20,7 @@ public class CreateAccount_View extends View<CreateAccount_Model> {
 	PasswordField passwordField;
 
 	Button createNewAccountButton;
+	Button cancelButton;
 
 	public CreateAccount_View(Stage stage, CreateAccount_Model model) {
 		super(stage, model);
@@ -43,10 +44,12 @@ public class CreateAccount_View extends View<CreateAccount_Model> {
 		passwordField = new PasswordField();
 		passwordField.setPromptText("Password");
 		createNewAccountButton = new Button("Create new Account");
+		cancelButton = new Button("Cancel");
 
 		pane.add(userNameTF, 0, 0);
 		pane.add(passwordField, 1, 0);
 		pane.add(createNewAccountButton, 0, 1);
+		pane.add(cancelButton, 1, 1);
 
 		return pane;
 	}
