@@ -21,3 +21,11 @@
   -fx-text-fill: #800080;
   -fx-border-width: 0px;
 }
+
+.addressOK {
+  -fx-text-fill: green;
+}
+
+.addressNotOK {
+  -fx-text-fill: red;
+}
