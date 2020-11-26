@@ -125,12 +125,12 @@ public class App_View extends View<App_Model> {
 		portTF = new TextField();
 		portTF.setPromptText("Port");
 		userNameTF = new TextField();
-		userNameTF.setPromptText("User Name / E-Mail");
+	//	userNameTF.setPromptText();
 		passwordField = new PasswordField();
 		passwordField.setPromptText("Password");
 		logInButton = new Button("log in");
 		logOutButton = new Button("log out");
-		createNewAccountButton = new Button("Create new Account");
+		createNewAccountButton = new Button();
 
 		pane.add(ipTF, 0, 0);
 		pane.add(portTF, 1, 0);
@@ -174,9 +174,15 @@ public class App_View extends View<App_Model> {
 		menuFileLanguage.setText(t.getString("program.menu.file.language"));
 		menuHelp.setText(t.getString("program.menu.help"));
 
-		// Other controls
+		// Buttons
 		btnClick.setText(t.getString("button.clickme"));
+		createNewAccountButton.setText(t.getString("button.createNewAccount"));
+		
+		// TextFields
+		userNameTF.setPromptText(t.getString("textField.username"));
 
+		// TODO: for all texts
+		
 		stage.setTitle(t.getString("program.name"));
 	}
 

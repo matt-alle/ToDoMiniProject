@@ -28,6 +28,8 @@ public class CreateAccount_View extends View<CreateAccount_Model> {
 
 	@Override
 	protected Scene create_GUI() {
+		// TODO make it able to switch languages
+		
 		VBox root = new VBox();
 		root.getChildren().add(createAccountArea());
 
