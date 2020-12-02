@@ -19,6 +19,8 @@ import javafx.stage.WindowEvent;
 
 public class App_Controller extends Controller<App_Model, App_View> {
 	ServiceLocator serviceLocator;
+	private static String SEPARATOR = "|";
+	private String message = "";
 	private boolean ipValid;
 	private boolean portValid;
 	private boolean userNameValid;
@@ -48,6 +50,62 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			view.getStage().hide();
 			main.startCreateAccount();
 		});
+
+		/**
+		 * --------------------------------------------------------------------------------------------------
+		 * Send messages to client on button-click
+		 */
+		view.pingButton.setOnAction(e -> {
+			// TODO: if-statement: if asked while logged in -> include token
+			message = "Ping";
+			try {
+				model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+			} catch (Exception ex) {
+				System.out.println("No connection to Server");
+			}
+			// TODO: what to do if wrong ip/port? how to handle everything but "true"?
+		});
+
+		// TODO
+		// view.createNewAccountButton.setOnAction(e -> {
+		// message = "CreateLogin" + SEPARATOR + view.userNameTF.getText() + SEPARATOR +
+		// view.passwordField.getText();
+		// model.sendMessageToServer(view.ipTF.getText(),
+		// Integer.valueOf(view.portTF.getText()), message);
+		// });
+
+		view.logInButton.setOnAction(e -> {
+			message = "Login" + SEPARATOR + view.userNameTF.getText() + SEPARATOR + view.passwordField.getText();
+			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+		});
+
+		view.saveTaskButton.setOnAction(e -> {
+			message = "CreateToDo" + SEPARATOR + model.getToken() + SEPARATOR + view.taskTitleTF.getText() + SEPARATOR
+					+ view.priorityCB.getSelectionModel().getSelectedItem() + SEPARATOR
+					+ view.taskDescriptionTA.getText();
+			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+		});
+
+		view.listToDosButton.setOnAction(e -> {
+			message = "ListToDos" + SEPARATOR + model.getToken();
+			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+		});
+
+		view.getToDoButton.setOnAction(e -> {
+			message = "GetToDo" + SEPARATOR + model.getToken() + SEPARATOR + "testID"; // get ID from a TextField or by
+																						// selecting from list?
+			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+		});
+
+		view.logOutButton.setOnAction(e -> {
+			message = "Logout";
+			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+		});
+
+		/**
+		 * End of messaging
+		 * ----------------------------------------------------------------------------------------------------------------------------------------
+		 */
 
 		serviceLocator = ServiceLocator.getServiceLocator();
 		serviceLocator.getLogger().info("Application controller initialized");
@@ -102,7 +160,7 @@ public class App_Controller extends Controller<App_Model, App_View> {
 	// TODO: specify more
 	private void validatePassword(String newValue) {
 		boolean valid = false;
-		if (newValue.length() >= 8 && newValue.length() <= 20) {
+		if (newValue.length() >= 3 && newValue.length() <= 20) {
 			valid = true;
 		}
 
@@ -163,6 +221,16 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		enableDisableButton();
 	}
 
+	private void validateTitle() {
+		// TODO: 3-20 characters
+		// other solution for description?
+	}
+
+	// maybe
+	private void logInStatus(boolean tf) {
+		// TODO: based on user logged in or out: activate/deactivate controls
+	}
+
 	// Changes text color in selected text field depending on "valid" value
 	private void updateTextColor(TextField textField, boolean valid) {
 		textField.getStyleClass().remove("addressNotOK");
@@ -180,6 +248,7 @@ public class App_Controller extends Controller<App_Model, App_View> {
 	}
 
 	/**
+	 * End of input validation
 	 * ----------------------------------------------------------------------------------------------------------------------------------------
 	 */
 

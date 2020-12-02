@@ -55,6 +55,9 @@ public class App_View extends View<App_Model> {
 	Button createNewAccountButton;
 	Button saveTaskButton;
 	Button displayTaskButton;
+	Button pingButton;
+	Button listToDosButton;
+	Button getToDoButton;
 
 	private enum priority { // maybe move later
 		LOW, MEDIUM, HIGH
@@ -119,21 +122,23 @@ public class App_View extends View<App_Model> {
 	private GridPane createAccountArea() {
 		GridPane pane = new GridPane();
 
-		ipTF = new TextField();
+		ipTF = new TextField("127.0.0.1"); // change later
 		// ipTF.setId("ipTF");
 		ipTF.setPromptText("IP Address");
-		portTF = new TextField();
+		portTF = new TextField("50001"); // change later
 		portTF.setPromptText("Port");
 		userNameTF = new TextField();
-	//	userNameTF.setPromptText();
+		// userNameTF.setPromptText();
 		passwordField = new PasswordField();
 		passwordField.setPromptText("Password");
 		logInButton = new Button("log in");
 		logOutButton = new Button("log out");
 		createNewAccountButton = new Button();
+		pingButton = new Button("Ping");
 
 		pane.add(ipTF, 0, 0);
 		pane.add(portTF, 1, 0);
+		pane.add(pingButton, 2, 0);
 		pane.add(userNameTF, 0, 1);
 		pane.add(passwordField, 1, 1);
 		pane.add(logInButton, 2, 1);
@@ -154,6 +159,8 @@ public class App_View extends View<App_Model> {
 		taskDescriptionTA = new TextArea();
 		taskDescriptionTA.setPromptText("Enter Task Description");
 		saveTaskButton = new Button("Save Task");
+		listToDosButton = new Button("List To Do's");
+		getToDoButton = new Button("Get To Do");
 
 		priorityCB.getItems().addAll(priority.values());
 
@@ -162,6 +169,8 @@ public class App_View extends View<App_Model> {
 		pane.add(priorityCB, 1, 1);
 		pane.add(taskDescriptionTA, 0, 2);
 		pane.add(saveTaskButton, 0, 3);
+		pane.add(listToDosButton, 1, 3);
+		pane.add(getToDoButton, 2, 3);
 
 		return pane;
 	}
@@ -177,12 +186,12 @@ public class App_View extends View<App_Model> {
 		// Buttons
 		btnClick.setText(t.getString("button.clickme"));
 		createNewAccountButton.setText(t.getString("button.createNewAccount"));
-		
+
 		// TextFields
 		userNameTF.setPromptText(t.getString("textField.username"));
 
 		// TODO: for all texts
-		
+
 		stage.setTitle(t.getString("program.name"));
 	}
 
