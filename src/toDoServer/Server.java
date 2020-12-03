@@ -2,6 +2,7 @@ package toDoServer;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Server extends Thread {
 	private Integer port = 50001;
