@@ -1,4 +1,4 @@
-package toDoMiniProject.server;
+package toDoServer;
 
 import java.net.ServerSocket;
 import java.net.Socket;

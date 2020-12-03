@@ -1,8 +1,8 @@
-package toDoMiniProject.createAccount;
+package toDoClient.createAccount;
 
-import toDoMiniProject.JavaFX_App_Template;
-import toDoMiniProject.ServiceLocator;
-import toDoMiniProject.abstractClasses.Controller;
+import toDoClient.JavaFX_App_Template;
+import toDoClient.ServiceLocator;
+import toDoClient.abstractClasses.Controller;
 
 public class CreateAccount_Controller extends Controller<CreateAccount_Model, CreateAccount_View> {
 	ServiceLocator serviceLocator;

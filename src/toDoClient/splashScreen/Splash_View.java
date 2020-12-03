@@ -1,7 +1,7 @@
-package toDoMiniProject.splashScreen;
+package toDoClient.splashScreen;
 
 
-import toDoMiniProject.abstractClasses.View;
+import toDoClient.abstractClasses.View;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;

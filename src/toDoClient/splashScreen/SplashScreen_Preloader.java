@@ -1,4 +1,4 @@
-package toDoMiniProject.splashScreen;
+package toDoClient.splashScreen;
 
 import javafx.application.Preloader;
 import javafx.scene.Scene;

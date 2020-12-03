@@ -1,11 +1,11 @@
-package toDoMiniProject.commonClasses;
+package toDoClient.commonClasses;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-import toDoMiniProject.ServiceLocator;
+import toDoClient.ServiceLocator;
 
 public class Translator {
     private ServiceLocator sl = ServiceLocator.getServiceLocator();

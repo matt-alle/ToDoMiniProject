@@ -1,14 +1,14 @@
-package toDoMiniProject;
+package toDoClient;
 
-import toDoMiniProject.appClasses.App_Controller;
-import toDoMiniProject.appClasses.App_Model;
-import toDoMiniProject.appClasses.App_View;
-import toDoMiniProject.createAccount.CreateAccount_Controller;
-import toDoMiniProject.createAccount.CreateAccount_Model;
-import toDoMiniProject.createAccount.CreateAccount_View;
-import toDoMiniProject.splashScreen.Splash_Controller;
-import toDoMiniProject.splashScreen.Splash_Model;
-import toDoMiniProject.splashScreen.Splash_View;
+import toDoClient.appClasses.App_Controller;
+import toDoClient.appClasses.App_Model;
+import toDoClient.appClasses.App_View;
+import toDoClient.createAccount.CreateAccount_Controller;
+import toDoClient.createAccount.CreateAccount_Model;
+import toDoClient.createAccount.CreateAccount_View;
+import toDoClient.splashScreen.Splash_Controller;
+import toDoClient.splashScreen.Splash_Model;
+import toDoClient.splashScreen.Splash_View;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;

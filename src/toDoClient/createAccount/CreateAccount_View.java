@@ -1,6 +1,6 @@
-package toDoMiniProject.createAccount;
+package toDoClient.createAccount;
 
-import toDoMiniProject.abstractClasses.View;
+import toDoClient.abstractClasses.View;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

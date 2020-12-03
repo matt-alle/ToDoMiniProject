@@ -1,4 +1,4 @@
-package toDoMiniProject.server;
+package toDoServer;
 
 import java.io.BufferedReader;
 import java.io.IOException;

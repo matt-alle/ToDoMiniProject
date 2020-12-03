@@ -1,10 +1,10 @@
-package toDoMiniProject;
+package toDoClient;
 
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import toDoMiniProject.commonClasses.Configuration;
-import toDoMiniProject.commonClasses.Translator;
+import toDoClient.commonClasses.Configuration;
+import toDoClient.commonClasses.Translator;
 
 /**
  * Copyright 2015, FHNW, Prof. Dr. Brad Richards. All rights reserved. This code

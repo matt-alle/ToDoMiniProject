@@ -1,7 +1,7 @@
-package toDoMiniProject.splashScreen;
+package toDoClient.splashScreen;
 
-import toDoMiniProject.JavaFX_App_Template;
-import toDoMiniProject.abstractClasses.Controller;
+import toDoClient.JavaFX_App_Template;
+import toDoClient.abstractClasses.Controller;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;

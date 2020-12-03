@@ -1,4 +1,4 @@
-package toDoMiniProject.splashScreen;
+package toDoClient.splashScreen;
 
 import java.util.concurrent.TimeUnit;
 import java.util.logging.FileHandler;
@@ -6,10 +6,10 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import toDoMiniProject.ServiceLocator;
-import toDoMiniProject.abstractClasses.Model;
-import toDoMiniProject.commonClasses.Configuration;
-import toDoMiniProject.commonClasses.Translator;
+import toDoClient.ServiceLocator;
+import toDoClient.abstractClasses.Model;
+import toDoClient.commonClasses.Configuration;
+import toDoClient.commonClasses.Translator;
 import javafx.concurrent.Task;
 
 /**

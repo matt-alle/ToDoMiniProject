@@ -1,11 +1,11 @@
-package toDoMiniProject.appClasses;
+package toDoClient.appClasses;
 
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import toDoMiniProject.ServiceLocator;
-import toDoMiniProject.abstractClasses.View;
-import toDoMiniProject.commonClasses.Translator;
+import toDoClient.ServiceLocator;
+import toDoClient.abstractClasses.View;
+import toDoClient.commonClasses.Translator;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;

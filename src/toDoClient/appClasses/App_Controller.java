@@ -1,8 +1,8 @@
-package toDoMiniProject.appClasses;
+package toDoClient.appClasses;
 
-import toDoMiniProject.JavaFX_App_Template;
-import toDoMiniProject.ServiceLocator;
-import toDoMiniProject.abstractClasses.Controller;
+import toDoClient.JavaFX_App_Template;
+import toDoClient.ServiceLocator;
+import toDoClient.abstractClasses.Controller;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

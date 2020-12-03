@@ -1,4 +1,4 @@
-package toDoMiniProject.abstractClasses;
+package toDoClient.abstractClasses;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;

@@ -1,12 +1,12 @@
-package toDoMiniProject.appClasses;
+package toDoClient.appClasses;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-import toDoMiniProject.ServiceLocator;
-import toDoMiniProject.abstractClasses.Model;
+import toDoClient.ServiceLocator;
+import toDoClient.abstractClasses.Model;
 
 /**
  * Copyright 2015, FHNW, Prof. Dr. Brad Richards. All rights reserved. This code

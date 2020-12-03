@@ -1,4 +1,4 @@
-package toDoMiniProject.commonClasses;
+package toDoClient.commonClasses;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,7 +9,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import toDoMiniProject.ServiceLocator;
+import toDoClient.ServiceLocator;
 
 /**
  * Copyright 2015, FHNW, Prof. Dr. Brad Richards. All rights reserved. This code
