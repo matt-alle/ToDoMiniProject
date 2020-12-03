@@ -19,6 +19,7 @@ public class App_Model extends Model {
 	ServiceLocator serviceLocator;
 	private int value;
 	private String token = "token_test";
+	private String[] serverMessage = new String[10];
 
 	public App_Model() {
 		value = 0;
@@ -44,12 +45,17 @@ public class App_Model extends Model {
 		try (Socket socket = new Socket(ip, port);
 				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());) {
-			// String message = "Hello from client!";
 			out.write(message + "\n");
 			out.flush();
+
 			System.out.println("Sent: " + message);
+			
 			String reply = in.readLine();
 			System.out.println("Received: " + reply);
+			// Split server message
+			String replyParts[] = reply.split("\\|");
+			serverMessage = replyParts;
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -57,6 +63,14 @@ public class App_Model extends Model {
 
 	public String getToken() {
 		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public String[] getServerMessageParts() {
+		return serverMessage;
 	}
 
 }

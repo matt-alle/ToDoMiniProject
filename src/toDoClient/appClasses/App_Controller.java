@@ -21,35 +21,22 @@ public class App_Controller extends Controller<App_Model, App_View> {
 	ServiceLocator serviceLocator;
 	private static String SEPARATOR = "|";
 	private String message = "";
+
 	private boolean ipValid;
 	private boolean portValid;
 	private boolean userNameValid;
 	private boolean passwordValid;
+	private boolean loggedIn; // Is the client currently logged in or not
 
 	public App_Controller(final JavaFX_App_Template main, App_Model model, App_View view) {
 		super(model, view);
-
-		// register ourselves to listen for button clicks
-		view.btnClick.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				buttonClick();
-			}
-		});
-
-		// register ourselves to handle window-closing event
-		view.getStage().setOnCloseRequest(new EventHandler<WindowEvent>() {
-			@Override
-			public void handle(WindowEvent event) {
-				Platform.exit();
-			}
-		});
-
+		loggedIn = false;
+		// TODO - if I want
 		// Open a new window to create new account; hide main window
-		view.createNewAccountButton.setOnAction(e -> {
-			view.getStage().hide();
-			main.startCreateAccount();
-		});
+		// view.createNewAccountButton.setOnAction(e -> {
+		// view.getStage().hide();
+		// main.startCreateAccount();
+		// });
 
 		/**
 		 * --------------------------------------------------------------------------------------------------
@@ -67,17 +54,49 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		});
 
 		// TODO
-		// view.createNewAccountButton.setOnAction(e -> {
-		// message = "CreateLogin" + SEPARATOR + view.userNameTF.getText() + SEPARATOR +
-		// view.passwordField.getText();
-		// model.sendMessageToServer(view.ipTF.getText(),
-		// Integer.valueOf(view.portTF.getText()), message);
-		// });
-
-		view.logInButton.setOnAction(e -> {
-			message = "Login" + SEPARATOR + view.userNameTF.getText() + SEPARATOR + view.passwordField.getText();
+		view.createNewAccountButton.setOnAction(e -> {
+			message = "CreateLogin" + SEPARATOR + view.userNameTF.getText() + SEPARATOR + view.passwordField.getText();
 			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
 		});
+
+		// Depending on logIn status: button does login or logout action
+		// TODO: DOES NOT WORK CORRECTLY!
+		boolean decider = loggedIn;
+		if (decider = false) {
+			view.logInOutButton.setOnAction(e -> {
+				message = "Login" + SEPARATOR + view.userNameTF.getText() + SEPARATOR + view.passwordField.getText();
+				System.out.println(loggedIn);
+				model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+				model.setToken(model.getServerMessageParts()[2]); // save the token which wasreceived from the server
+				loggedIn = switchLoginLogoutGUI(loggedIn);
+			});
+		} else {
+			System.out.println("was true...");
+			view.logInOutButton.setOnAction(e -> {
+				message = "Logout";
+				System.out.println(loggedIn);
+				model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+				loggedIn = switchLoginLogoutGUI(loggedIn);
+				model.setToken(null); // delete token
+			});
+		}
+
+		
+		/**
+		 * view.logInOutButton.setOnAction(e -> { boolean decider = loggedIn;
+		 * System.out.println("decider: " + decider); if (decider = false) { message =
+		 * "Login" + SEPARATOR + view.userNameTF.getText() + SEPARATOR +
+		 * view.passwordField.getText(); System.out.println(loggedIn);
+		 * model.sendMessageToServer(view.ipTF.getText(),
+		 * Integer.valueOf(view.portTF.getText()), message);
+		 * model.setToken(model.getServerMessageParts()[2]); // save the token which was
+		 * received from the server loggedIn = switchLoginLogoutGUI(loggedIn);
+		 * System.out.println("u2?"); } if (decider = true) { System.out.println("was
+		 * true..."); message = "Logout"; System.out.println(loggedIn);
+		 * model.sendMessageToServer(view.ipTF.getText(),
+		 * Integer.valueOf(view.portTF.getText()), message); loggedIn =
+		 * switchLoginLogoutGUI(loggedIn); model.setToken(null); // delete token } });
+		 */
 
 		view.saveTaskButton.setOnAction(e -> {
 			message = "CreateToDo" + SEPARATOR + model.getToken() + SEPARATOR + view.taskTitleTF.getText() + SEPARATOR
@@ -97,11 +116,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
 		});
 
-		view.logOutButton.setOnAction(e -> {
-			message = "Logout";
-			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
-		});
-
 		/**
 		 * End of messaging
 		 * ----------------------------------------------------------------------------------------------------------------------------------------
@@ -110,18 +124,58 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		serviceLocator = ServiceLocator.getServiceLocator();
 		serviceLocator.getLogger().info("Application controller initialized");
 
-		view.logInButton.setDisable(true);
+		view.logInOutButton.setDisable(true);
 		view.userNameTF.textProperty().addListener((observable, oldValue, newValue) -> validateUserName(newValue));
 		view.passwordField.textProperty().addListener((observable, oldValue, newValue) -> validatePassword(newValue));
 		view.ipTF.textProperty().addListener((observable, oldValue, newValue) -> validateIP(newValue));
 		view.portTF.textProperty().addListener((observable, oldValue, newValue) -> validatePort(newValue));
 	}
 
-	public void buttonClick() {
-		model.incrementValue();
-		String newText = Integer.toString(model.getValue());
+//	public void buttonClick() {
+//		model.incrementValue();
+//		String newText = Integer.toString(model.getValue());
+//
+//		view.lblNumber.setText(newText);
+//	}
 
-		view.lblNumber.setText(newText);
+	// Change GUI depending on if user is logged in or logged out
+	public boolean switchLoginLogoutGUI(boolean loggedIn) {
+		// if user already logged in, do:
+		boolean result;
+		if (loggedIn) {
+			view.logInOutButton.setText("Log In");
+			view.ipTF.setDisable(false);
+			view.portTF.setDisable(false);
+			view.userNameTF.setDisable(false);
+			view.passwordField.setDisable(false);
+			view.createNewAccountButton.setDisable(false);
+			// ToDo area
+			view.taskTitleTF.setDisable(true);
+			// view.taskDescriptionTA.setDisable(true);
+			// view.priorityCB.setDisable(true);
+			view.saveTaskButton.setDisable(true);
+			// view.displayTaskButton.setDisable(true);
+			// view.listToDosButton.setDisable(true);
+			result = false;
+		}
+		// if user not logged in, do:
+		else {
+			view.logInOutButton.setText("Log Out");
+			view.ipTF.setDisable(true);
+			view.portTF.setDisable(true);
+			view.userNameTF.setDisable(true);
+			view.passwordField.setDisable(true);
+			view.createNewAccountButton.setDisable(true);
+			// ToDo area
+			view.taskTitleTF.setDisable(false);
+			// view.taskDescriptionTA.setDisable(false);
+			// view.priorityCB.setDisable(false);
+			view.saveTaskButton.setDisable(false);
+			// view.displayTaskButton.setDisable(false);
+			// view.listToDosButton.setDisable(false);
+			result = true;
+		}
+		return result;
 	}
 
 	/**
@@ -244,7 +298,7 @@ public class App_Controller extends Controller<App_Model, App_View> {
 
 	private void enableDisableButton() {
 		boolean valid = userNameValid && passwordValid && ipValid && portValid;
-		view.logInButton.setDisable(!valid);
+		view.logInOutButton.setDisable(!valid);
 	}
 
 	/**

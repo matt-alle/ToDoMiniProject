@@ -33,11 +33,6 @@ public class App_View extends View<App_Model> {
 	Menu menuFileLanguage;
 	Menu menuHelp;
 
-	// --- Delete later
-	Label lblNumber;
-	Button btnClick;
-	// ---
-
 	Label accAreaTitle;
 	Label taskAreaTitle;
 
@@ -50,8 +45,7 @@ public class App_View extends View<App_Model> {
 
 	TextArea taskDescriptionTA;
 
-	Button logInButton;
-	Button logOutButton;
+	Button logInOutButton;
 	Button createNewAccountButton;
 	Button saveTaskButton;
 	Button displayTaskButton;
@@ -96,19 +90,6 @@ public class App_View extends View<App_Model> {
 		VBox root = new VBox();
 		root.getChildren().add(menuBar);
 
-		// Delete later
-		// --------------------------------------------------------------------------
-		lblNumber = new Label();
-		lblNumber.setText(Integer.toString(model.getValue()));
-		lblNumber.setMinWidth(200);
-		lblNumber.setAlignment(Pos.BASELINE_CENTER);
-		root.getChildren().add(lblNumber);
-
-		btnClick = new Button();
-		btnClick.setMinWidth(200);
-		root.getChildren().add(btnClick);
-		// ----------------------------------------------------------------------------------------
-
 		root.getChildren().add(createAccountArea());
 		root.getChildren().add(createTaskArea());
 
@@ -127,12 +108,11 @@ public class App_View extends View<App_Model> {
 		ipTF.setPromptText("IP Address");
 		portTF = new TextField("50001"); // change later
 		portTF.setPromptText("Port");
-		userNameTF = new TextField();
+		userNameTF = new TextField("aa.bb@cc.dd");
 		// userNameTF.setPromptText();
 		passwordField = new PasswordField();
 		passwordField.setPromptText("Password");
-		logInButton = new Button("log in");
-		logOutButton = new Button("log out");
+		logInOutButton = new Button("Log In");
 		createNewAccountButton = new Button();
 		pingButton = new Button("Ping");
 
@@ -141,8 +121,7 @@ public class App_View extends View<App_Model> {
 		pane.add(pingButton, 2, 0);
 		pane.add(userNameTF, 0, 1);
 		pane.add(passwordField, 1, 1);
-		pane.add(logInButton, 2, 1);
-		pane.add(logOutButton, 3, 1);
+		pane.add(logInOutButton, 2, 1);
 		pane.add(createNewAccountButton, 0, 2);
 
 		return pane;
@@ -184,7 +163,6 @@ public class App_View extends View<App_Model> {
 		menuHelp.setText(t.getString("program.menu.help"));
 
 		// Buttons
-		btnClick.setText(t.getString("button.clickme"));
 		createNewAccountButton.setText(t.getString("button.createNewAccount"));
 
 		// TextFields
