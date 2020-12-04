@@ -49,15 +49,19 @@ public class App_Model extends Model {
 			out.flush();
 
 			System.out.println("Sent: " + message);
-			
+
 			String reply = in.readLine();
 			System.out.println("Received: " + reply);
 			// Split server message
-			String replyParts[] = reply.split("\\|");
-			serverMessage = replyParts;
+			if (reply != null) {
+				String replyParts[] = reply.split("\\|");
+				serverMessage = replyParts;
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			serverMessage[0] = "Result"; // To display "no connection to server" status
+			serverMessage[1] = "false";
 		}
 	}
 

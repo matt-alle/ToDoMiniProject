@@ -26,11 +26,19 @@ public class App_Controller extends Controller<App_Model, App_View> {
 	private boolean portValid;
 	private boolean userNameValid;
 	private boolean passwordValid;
-	private boolean loggedIn; // Is the client currently logged in or not
+	private boolean loggedIn = false; // Is the client currently logged in or not
 
 	public App_Controller(final JavaFX_App_Template main, App_Model model, App_View view) {
 		super(model, view);
-		loggedIn = false;
+
+		// Disable at start:
+		view.taskTitleTF.setDisable(true);
+		view.taskDescriptionTA.setDisable(true);
+		view.priorityCB.setDisable(true);
+		view.saveTaskButton.setDisable(true);
+		view.getToDoButton.setDisable(true);
+		view.listToDosButton.setDisable(true);
+
 		// TODO - if I want
 		// Open a new window to create new account; hide main window
 		// view.createNewAccountButton.setOnAction(e -> {
@@ -43,60 +51,55 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		 * Send messages to client on button-click
 		 */
 		view.pingButton.setOnAction(e -> {
-			// TODO: if-statement: if asked while logged in -> include token
-			message = "Ping";
-			try {
-				model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
-			} catch (Exception ex) {
-				System.out.println("No connection to Server");
+			// If asked while logged in -> include token
+			boolean addToken = loggedIn;
+			if (addToken == true) {
+				message = "Ping" + SEPARATOR + model.getToken();
 			}
-			// TODO: what to do if wrong ip/port? how to handle everything but "true"?
+			if (addToken == false) {
+				message = "Ping";
+			}
+			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+
+			if (model.getServerMessageParts()[1].equals("true"))
+				view.statusLabel.setText("Connected to server");
+			else
+				view.statusLabel.setText("No connection to server");
 		});
 
-		// TODO
 		view.createNewAccountButton.setOnAction(e -> {
 			message = "CreateLogin" + SEPARATOR + view.userNameTF.getText() + SEPARATOR + view.passwordField.getText();
 			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+			if (model.getServerMessageParts()[1].equals("true"))
+				view.statusLabel.setText("Account created");
+			else
+				view.statusLabel.setText("User name already taken");
 		});
 
-		// Depending on logIn status: button does login or logout action
-		// TODO: DOES NOT WORK CORRECTLY!
-		boolean decider = loggedIn;
-		if (decider = false) {
-			view.logInOutButton.setOnAction(e -> {
+		// Depending on logIn-status: button goes from logged out to logged in or vice
+		// versa
+		view.logInOutButton.setOnAction(e -> {
+			boolean logInOutSwitch = loggedIn;
+			System.out.println("decider: " + logInOutSwitch);
+			if (logInOutSwitch == false) {
 				message = "Login" + SEPARATOR + view.userNameTF.getText() + SEPARATOR + view.passwordField.getText();
-				System.out.println(loggedIn);
 				model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
-				model.setToken(model.getServerMessageParts()[2]); // save the token which wasreceived from the server
-				loggedIn = switchLoginLogoutGUI(loggedIn);
-			});
-		} else {
-			System.out.println("was true...");
-			view.logInOutButton.setOnAction(e -> {
+				// if login was successful -> save the token which was received from the server
+				// and adapt GUI
+				if (model.getServerMessageParts()[1].equals("true")) {
+					model.setToken(model.getServerMessageParts()[2]);
+					loggedIn = switchLoginLogoutGUI(loggedIn);
+				} else {
+					view.statusLabel.setText("Invalid user name or password");
+				}
+			}
+			if (logInOutSwitch == true) {
 				message = "Logout";
-				System.out.println(loggedIn);
 				model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
 				loggedIn = switchLoginLogoutGUI(loggedIn);
 				model.setToken(null); // delete token
-			});
-		}
-
-		
-		/**
-		 * view.logInOutButton.setOnAction(e -> { boolean decider = loggedIn;
-		 * System.out.println("decider: " + decider); if (decider = false) { message =
-		 * "Login" + SEPARATOR + view.userNameTF.getText() + SEPARATOR +
-		 * view.passwordField.getText(); System.out.println(loggedIn);
-		 * model.sendMessageToServer(view.ipTF.getText(),
-		 * Integer.valueOf(view.portTF.getText()), message);
-		 * model.setToken(model.getServerMessageParts()[2]); // save the token which was
-		 * received from the server loggedIn = switchLoginLogoutGUI(loggedIn);
-		 * System.out.println("u2?"); } if (decider = true) { System.out.println("was
-		 * true..."); message = "Logout"; System.out.println(loggedIn);
-		 * model.sendMessageToServer(view.ipTF.getText(),
-		 * Integer.valueOf(view.portTF.getText()), message); loggedIn =
-		 * switchLoginLogoutGUI(loggedIn); model.setToken(null); // delete token } });
-		 */
+			}
+		});
 
 		view.saveTaskButton.setOnAction(e -> {
 			message = "CreateToDo" + SEPARATOR + model.getToken() + SEPARATOR + view.taskTitleTF.getText() + SEPARATOR
@@ -131,13 +134,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		view.portTF.textProperty().addListener((observable, oldValue, newValue) -> validatePort(newValue));
 	}
 
-//	public void buttonClick() {
-//		model.incrementValue();
-//		String newText = Integer.toString(model.getValue());
-//
-//		view.lblNumber.setText(newText);
-//	}
-
 	// Change GUI depending on if user is logged in or logged out
 	public boolean switchLoginLogoutGUI(boolean loggedIn) {
 		// if user already logged in, do:
@@ -151,11 +147,11 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			view.createNewAccountButton.setDisable(false);
 			// ToDo area
 			view.taskTitleTF.setDisable(true);
-			// view.taskDescriptionTA.setDisable(true);
-			// view.priorityCB.setDisable(true);
+			view.taskDescriptionTA.setDisable(true);
+			view.priorityCB.setDisable(true);
 			view.saveTaskButton.setDisable(true);
-			// view.displayTaskButton.setDisable(true);
-			// view.listToDosButton.setDisable(true);
+			view.getToDoButton.setDisable(true);
+			view.listToDosButton.setDisable(true);
 			result = false;
 		}
 		// if user not logged in, do:
@@ -168,11 +164,11 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			view.createNewAccountButton.setDisable(true);
 			// ToDo area
 			view.taskTitleTF.setDisable(false);
-			// view.taskDescriptionTA.setDisable(false);
-			// view.priorityCB.setDisable(false);
+			view.taskDescriptionTA.setDisable(false);
+			view.priorityCB.setDisable(false);
 			view.saveTaskButton.setDisable(false);
-			// view.displayTaskButton.setDisable(false);
-			// view.listToDosButton.setDisable(false);
+			view.getToDoButton.setDisable(false);
+			view.listToDosButton.setDisable(false);
 			result = true;
 		}
 		return result;

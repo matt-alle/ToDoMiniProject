@@ -7,13 +7,13 @@ public class ToDoEntry {
 	private String title;
 	private String priority;
 	private String description;
-	private int userID;
+	private String user;
 
 	private static int getNextID() {
 		return highestID++;
 	}
 
-	public ToDoEntry(String title, String priority, String description, int userID) {
+	public ToDoEntry(String title, String priority, String description, String user) {
 		this.toDoID = getNextID();
 		this.title = title;
 		this.priority = priority;

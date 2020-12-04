@@ -8,6 +8,12 @@ public class Server extends Thread {
 	private Integer port = 50001;
 //	private final Logger logger = Logger.getLogger("");
 
+	/**
+	 * Initialize serverModel when the server is started and pass it on to every
+	 * Thread. Every client updates the same user/todo list
+	 */
+	private ServerModel serverModel = new ServerModel();
+
 	public static void main(String[] args) {
 		Server server = new Server();
 		server.start();
@@ -21,7 +27,7 @@ public class Server extends Thread {
 
 			while (true) {
 				Socket socket = listener.accept();
-				ClientThread client = new ClientThread(socket);
+				ClientThread client = new ClientThread(socket, serverModel);
 				client.start();
 			}
 		} catch (Exception e) {

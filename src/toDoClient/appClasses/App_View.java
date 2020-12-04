@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import toDoClient.ServiceLocator;
 import toDoClient.abstractClasses.View;
 import toDoClient.commonClasses.Translator;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -35,6 +34,7 @@ public class App_View extends View<App_Model> {
 
 	Label accAreaTitle;
 	Label taskAreaTitle;
+	Label statusLabel;
 
 	TextField ipTF;
 	TextField portTF;
@@ -48,7 +48,6 @@ public class App_View extends View<App_Model> {
 	Button logInOutButton;
 	Button createNewAccountButton;
 	Button saveTaskButton;
-	Button displayTaskButton;
 	Button pingButton;
 	Button listToDosButton;
 	Button getToDoButton;
@@ -115,6 +114,7 @@ public class App_View extends View<App_Model> {
 		logInOutButton = new Button("Log In");
 		createNewAccountButton = new Button();
 		pingButton = new Button("Ping");
+		statusLabel = new Label("   ");
 
 		pane.add(ipTF, 0, 0);
 		pane.add(portTF, 1, 0);
@@ -122,6 +122,7 @@ public class App_View extends View<App_Model> {
 		pane.add(userNameTF, 0, 1);
 		pane.add(passwordField, 1, 1);
 		pane.add(logInOutButton, 2, 1);
+		pane.add(statusLabel, 3, 1);
 		pane.add(createNewAccountButton, 0, 2);
 
 		return pane;
