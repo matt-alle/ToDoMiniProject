@@ -40,6 +40,7 @@ public class App_View extends View<App_Model> {
 	TextField portTF;
 	TextField userNameTF;
 	TextField taskTitleTF;
+	TextField todoIDTF;
 
 	PasswordField passwordField;
 
@@ -134,6 +135,8 @@ public class App_View extends View<App_Model> {
 		taskAreaTitle = new Label("Tasks:");
 		taskTitleTF = new TextField();
 		taskTitleTF.setPromptText("Enter Title");
+		todoIDTF = new TextField();
+		todoIDTF.setPromptText("TODO ID");
 		priorityCB = new ComboBox<>();
 		priorityCB.setPromptText("Select Priority");
 		taskDescriptionTA = new TextArea();
@@ -151,6 +154,7 @@ public class App_View extends View<App_Model> {
 		pane.add(saveTaskButton, 0, 3);
 		pane.add(listToDosButton, 1, 3);
 		pane.add(getToDoButton, 2, 3);
+		pane.add(todoIDTF, 2, 4);
 
 		return pane;
 	}

@@ -80,7 +80,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		// versa
 		view.logInOutButton.setOnAction(e -> {
 			boolean logInOutSwitch = loggedIn;
-			System.out.println("decider: " + logInOutSwitch);
 			if (logInOutSwitch == false) {
 				message = "Login" + SEPARATOR + view.userNameTF.getText() + SEPARATOR + view.passwordField.getText();
 				model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
@@ -114,8 +113,8 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		});
 
 		view.getToDoButton.setOnAction(e -> {
-			message = "GetToDo" + SEPARATOR + model.getToken() + SEPARATOR + "testID"; // get ID from a TextField or by
-																						// selecting from list?
+			// TODO: find better way to select todo (from a list?)
+			message = "GetToDo" + SEPARATOR + model.getToken() + SEPARATOR + view.todoIDTF.getText();
 			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
 		});
 

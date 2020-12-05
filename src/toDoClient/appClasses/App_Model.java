@@ -1,6 +1,7 @@
 package toDoClient.appClasses;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
@@ -48,10 +49,10 @@ public class App_Model extends Model {
 			out.write(message + "\n");
 			out.flush();
 
-			System.out.println("Sent: " + message);
+			System.out.print("Client: " + message + "\n");
 
 			String reply = in.readLine();
-			System.out.println("Received: " + reply);
+			System.out.println("Server: " + reply);
 			// Split server message
 			if (reply != null) {
 				String replyParts[] = reply.split("\\|");
