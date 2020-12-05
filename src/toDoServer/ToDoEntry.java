@@ -18,6 +18,7 @@ public class ToDoEntry {
 		this.title = title;
 		this.priority = priority;
 		this.description = description;
+		this.user = user;
 	}
 
 	public int getToDoID() {

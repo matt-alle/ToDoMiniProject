@@ -46,5 +46,11 @@ public class User {
 	public int getUserID() {
 		return userID;
 	}
+	
+	@Override
+	public String toString() {
+		String toDo = this.userName + "|" + this.userPassword + "|" + this.userToken;
+		return toDo;
+	}
 
 }
