@@ -4,6 +4,8 @@ import toDoClient.JavaFX_App_Template;
 import toDoClient.ServiceLocator;
 import toDoClient.abstractClasses.Controller;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
@@ -80,23 +82,29 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		// versa
 		view.logInOutButton.setOnAction(e -> {
 			boolean logInOutSwitch = loggedIn;
-			if (logInOutSwitch == false) {
-				message = "Login" + SEPARATOR + view.userNameTF.getText() + SEPARATOR + view.passwordField.getText();
-				model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
-				// if login was successful -> save the token which was received from the server
-				// and adapt GUI
-				if (model.getServerMessageParts()[1].equals("true")) {
-					model.setToken(model.getServerMessageParts()[2]);
-					loggedIn = switchLoginLogoutGUI(loggedIn);
-				} else {
-					view.statusLabel.setText("Invalid user name or password");
+			try {
+				if (logInOutSwitch == false) {
+					message = "Login" + SEPARATOR + view.userNameTF.getText() + SEPARATOR
+							+ view.passwordField.getText();
+					model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+					// if login was successful -> save the token which was received from the server
+					// and adapt GUI
+					if (model.getServerMessageParts()[1].equals("true")) {
+						model.setToken(model.getServerMessageParts()[2]);
+						loggedIn = switchLoginLogoutGUI(loggedIn);
+					} else {
+						view.statusLabel.setText("Invalid user name or password");
+					}
 				}
-			}
-			if (logInOutSwitch == true) {
-				message = "Logout";
-				model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
-				loggedIn = switchLoginLogoutGUI(loggedIn);
-				model.setToken(null); // delete token
+				if (logInOutSwitch == true) {
+					// TODO: maybe automatically log out when windo is closed
+					message = "Logout";
+					model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+					loggedIn = switchLoginLogoutGUI(loggedIn);
+					model.setToken(null); // delete token
+				}
+			} catch (Exception ex) {
+				System.out.println("trouble");
 			}
 		});
 
@@ -110,12 +118,23 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		view.listToDosButton.setOnAction(e -> {
 			message = "ListToDos" + SEPARATOR + model.getToken();
 			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+			String todoList = "";
+			for (int i = 2; i < model.getServerMessageParts().length; i++) {
+				todoList += model.getServerMessageParts()[i] + " / ";
+			}
+			view.todoDisplayTA.setText(todoList);
 		});
 
 		view.getToDoButton.setOnAction(e -> {
 			// TODO: find better way to select todo (from a list?)
 			message = "GetToDo" + SEPARATOR + model.getToken() + SEPARATOR + view.todoIDTF.getText();
 			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+			String todo = "";
+			String line = "====================================================\n";
+			for (int i = 2; i < model.getServerMessageParts().length; i++) {
+				todo += line + model.getServerMessageParts()[i] + "\n";
+			}
+			view.todoDisplayTA.setText(todo);
 		});
 
 		/**
@@ -131,6 +150,25 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		view.passwordField.textProperty().addListener((observable, oldValue, newValue) -> validatePassword(newValue));
 		view.ipTF.textProperty().addListener((observable, oldValue, newValue) -> validateIP(newValue));
 		view.portTF.textProperty().addListener((observable, oldValue, newValue) -> validatePort(newValue));
+		view.scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
+			public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+				int x = old_val.intValue();
+				int y = new_val.intValue();
+				System.out.println(x);
+				System.out.println(y);
+				// TODO (not really working yet) ----
+				message = "GetToDo" + SEPARATOR + model.getToken() + SEPARATOR + x;
+				model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+				String todo = "";
+				String line = "====================================================\n";
+				for (int i = 2; i < model.getServerMessageParts().length; i++) {
+					todo += line + model.getServerMessageParts()[i] + "\n";
+				}
+				view.todoDisplayTA.setText(todo);
+				// ----
+			}
+		});
+
 	}
 
 	// Change GUI depending on if user is logged in or logged out

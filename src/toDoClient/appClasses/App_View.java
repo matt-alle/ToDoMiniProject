@@ -14,8 +14,12 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -45,6 +49,7 @@ public class App_View extends View<App_Model> {
 	PasswordField passwordField;
 
 	TextArea taskDescriptionTA;
+	TextArea todoDisplayTA;
 
 	Button logInOutButton;
 	Button createNewAccountButton;
@@ -52,6 +57,8 @@ public class App_View extends View<App_Model> {
 	Button pingButton;
 	Button listToDosButton;
 	Button getToDoButton;
+
+	ScrollBar scrollBar;
 
 	private enum priority { // maybe move later
 		LOW, MEDIUM, HIGH
@@ -115,7 +122,7 @@ public class App_View extends View<App_Model> {
 		logInOutButton = new Button("Log In");
 		createNewAccountButton = new Button();
 		pingButton = new Button("Ping");
-		statusLabel = new Label("   ");
+		statusLabel = new Label("Status");
 
 		pane.add(ipTF, 0, 0);
 		pane.add(portTF, 1, 0);
@@ -123,8 +130,8 @@ public class App_View extends View<App_Model> {
 		pane.add(userNameTF, 0, 1);
 		pane.add(passwordField, 1, 1);
 		pane.add(logInOutButton, 2, 1);
-		pane.add(statusLabel, 3, 1);
 		pane.add(createNewAccountButton, 0, 2);
+		pane.add(statusLabel, 1, 2, 2, 1);
 
 		return pane;
 	}
@@ -141,20 +148,27 @@ public class App_View extends View<App_Model> {
 		priorityCB.setPromptText("Select Priority");
 		taskDescriptionTA = new TextArea();
 		taskDescriptionTA.setPromptText("Enter Task Description");
+		taskDescriptionTA.setWrapText(true);
+		todoDisplayTA = new TextArea();
+		todoDisplayTA.setWrapText(true);
+		todoDisplayTA.setEditable(false);
 		saveTaskButton = new Button("Save Task");
 		listToDosButton = new Button("List To Do's");
 		getToDoButton = new Button("Get To Do");
+		scrollBar = new ScrollBar();
 
 		priorityCB.getItems().addAll(priority.values());
 
 		pane.add(taskAreaTitle, 0, 0);
 		pane.add(taskTitleTF, 0, 1);
 		pane.add(priorityCB, 1, 1);
-		pane.add(taskDescriptionTA, 0, 2);
+		pane.add(taskDescriptionTA, 0, 2, 4, 1);
 		pane.add(saveTaskButton, 0, 3);
-		pane.add(listToDosButton, 1, 3);
-		pane.add(getToDoButton, 2, 3);
-		pane.add(todoIDTF, 2, 4);
+		pane.add(listToDosButton, 0, 4);
+		pane.add(todoIDTF, 1, 4);
+		pane.add(getToDoButton, 2, 4);
+		pane.add(scrollBar, 3, 4);
+		pane.add(todoDisplayTA, 0, 5, 4, 1);
 
 		return pane;
 	}

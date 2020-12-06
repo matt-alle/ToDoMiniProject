@@ -116,7 +116,9 @@ public class ClientThread extends Thread {
 					String todoList = "Result|true";
 					// create a string with the IDs of all the existing tasks
 					for (int i = 0; i < serverModel.getToDoList().size(); i++) {
-						todoList += ("|" + serverModel.getToDoList().get(i).getToDoID());
+						if (serverModel.getCurrentUser().getUserName()
+								.equals(serverModel.getToDoList().get(i).getUser()))
+							todoList += ("|" + serverModel.getToDoList().get(i).getToDoID());
 					}
 					out.print(todoList);
 					break;

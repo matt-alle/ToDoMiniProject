@@ -37,6 +37,10 @@ public class ToDoEntry {
 		this.description = description;
 	}
 
+	public String getUser() {
+		return this.user;
+	}
+
 	@Override
 	public String toString() {
 		String toDo = this.title + "|" + this.priority + "|" + this.description;
