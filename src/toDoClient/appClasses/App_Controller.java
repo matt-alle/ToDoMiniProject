@@ -63,10 +63,13 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			}
 			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
 
-			if (model.getServerMessageParts()[1].equals("true"))
+			if (model.getServerMessageParts()[1] == "true")
 				view.statusLabel.setText("Connected to server");
 			else
 				view.statusLabel.setText("No connection to server");
+			// TODO: dafuq?
+			System.out.println("Ping???" + model.getServerMessageParts()[1]);
+			System.out.println(model.getServerMessageParts()[1] == "true");
 		});
 
 		view.createNewAccountButton.setOnAction(e -> {
@@ -80,6 +83,7 @@ public class App_Controller extends Controller<App_Model, App_View> {
 
 		// Depending on logIn-status: button goes from logged out to logged in or vice
 		// versa
+
 		view.logInOutButton.setOnAction(e -> {
 			boolean logInOutSwitch = loggedIn;
 			try {

@@ -38,9 +38,8 @@ public class ClientThread extends Thread {
 
 				case "Ping":
 					System.out.println("casePing");
-					out.print("Result|true");
+					out.print("Result|true \r\n");
 					out.flush();
-					socket.close();
 					break;
 
 				case "CreateLogin":
@@ -124,12 +123,14 @@ public class ClientThread extends Thread {
 					break;
 
 				case "GetToDo":
+					// TODO: chose by rank in list of user except ID?
 					System.out.println("caseGetToDo");
 					int todoID = Integer.valueOf(messageParts[2]); // TODO error handling
 					boolean found = false;
 					int i = 0;
 					while (i < serverModel.getToDoList().size() && !found) {
-						if (todoID == serverModel.getToDoList().get(i).getToDoID()) {
+						if (todoID == serverModel.getToDoList().get(i).getToDoID() && serverModel.getToDoList().get(i)
+								.getUser() == serverModel.getCurrentUser().getUserName()) {
 							out.print("Result|true|" + serverModel.getToDoList().get(i).toString());
 							found = true;
 						}
@@ -151,6 +152,9 @@ public class ClientThread extends Thread {
 					System.out.println("Unknown Message Type");
 					out.print("Result|false");
 				}
+				out.flush();
+				socket.close();
+
 				// if anything goes wrong -> send "false"
 			} catch (Exception ex) {
 				out.print("Result|false");
