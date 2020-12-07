@@ -38,7 +38,7 @@ public class ClientThread extends Thread {
 
 				case "Ping":
 					System.out.println("casePing");
-					out.print("Result|true \r\n");
+					out.print("Result|true");
 					out.flush();
 					break;
 
@@ -158,7 +158,6 @@ public class ClientThread extends Thread {
 				// if anything goes wrong -> send "false"
 			} catch (Exception ex) {
 				out.print("Result|false");
-				ex.toString();
 			}
 
 			out.flush();
@@ -168,6 +167,9 @@ public class ClientThread extends Thread {
 			System.out.println("Server: something was caught");
 			// logger.warning(e.toString());
 		}
+		// TODO: move somewhere else
+		serverModel.writeSaveFileUsers();
+		serverModel.writeSaveFileToDo();
 	}
 
 	public String createToken() {

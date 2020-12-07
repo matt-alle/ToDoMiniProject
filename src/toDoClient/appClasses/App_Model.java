@@ -51,8 +51,33 @@ public class App_Model extends Model {
 
 			System.out.print("Client: " + message + "\n");
 
+			// -------WTF...
+			// String reply = ""; // Anything except null
+			// while (reply != null) { // Will be null if the server closes the socket
+			// try {
+			// reply = in.readLine();
+			// System.out.println("Server: " + reply);
+			// } catch (IOException e) {
+			// reply = null; // end loop if we have a communications error
+			// System.out.println("Exc");
+			// }
+			// }
+
+			// try {
+			// String replyParts[] = reply.split("\\|");
+			// serverMessage = replyParts;
+			// int l = replyParts.length;
+			// for (int i = 0; i < l; i++) {
+			// System.out.println("parts: " + replyParts[i]);
+			// }
+			// } catch (Exception e) {
+			// System.out.println(e.toString());
+			// }
+			// --
+
 			String reply = in.readLine();
 			System.out.println("Server: " + reply);
+
 			// Split server message
 			if (reply != null) {
 				String replyParts[] = reply.split("\\|");
@@ -64,6 +89,7 @@ public class App_Model extends Model {
 			serverMessage[0] = "Result"; // To display "no connection to server" status
 			serverMessage[1] = "false";
 		}
+
 	}
 
 	public String getToken() {

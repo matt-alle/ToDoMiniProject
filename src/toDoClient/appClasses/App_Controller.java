@@ -40,6 +40,12 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		view.saveTaskButton.setDisable(true);
 		view.getToDoButton.setDisable(true);
 		view.listToDosButton.setDisable(true);
+		view.todoIDTF.setDisable(true);
+
+		// Validate preset values at the beginning (if there are any)
+		validateUserName(view.userNameTF.getText());
+		validateIP(view.ipTF.getText());
+		validatePort(view.portTF.getText());
 
 		// TODO - if I want
 		// Open a new window to create new account; hide main window
@@ -63,13 +69,10 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			}
 			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
 
-			if (model.getServerMessageParts()[1] == "true")
+			if (model.getServerMessageParts()[1].equals("true"))
 				view.statusLabel.setText("Connected to server");
 			else
 				view.statusLabel.setText("No connection to server");
-			// TODO: dafuq?
-			System.out.println("Ping???" + model.getServerMessageParts()[1]);
-			System.out.println(model.getServerMessageParts()[1] == "true");
 		});
 
 		view.createNewAccountButton.setOnAction(e -> {
@@ -96,6 +99,7 @@ public class App_Controller extends Controller<App_Model, App_View> {
 					if (model.getServerMessageParts()[1].equals("true")) {
 						model.setToken(model.getServerMessageParts()[2]);
 						loggedIn = switchLoginLogoutGUI(loggedIn);
+						view.statusLabel.setText("Login successful");
 					} else {
 						view.statusLabel.setText("Invalid user name or password");
 					}
@@ -106,6 +110,7 @@ public class App_Controller extends Controller<App_Model, App_View> {
 					model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
 					loggedIn = switchLoginLogoutGUI(loggedIn);
 					model.setToken(null); // delete token
+					view.statusLabel.setText("Logged out");
 				}
 			} catch (Exception ex) {
 				System.out.println("trouble");
@@ -117,6 +122,8 @@ public class App_Controller extends Controller<App_Model, App_View> {
 					+ view.priorityCB.getSelectionModel().getSelectedItem() + SEPARATOR
 					+ view.taskDescriptionTA.getText();
 			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+			view.taskTitleTF.clear();
+			view.taskDescriptionTA.clear();
 		});
 
 		view.listToDosButton.setOnAction(e -> {
@@ -150,6 +157,7 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		serviceLocator.getLogger().info("Application controller initialized");
 
 		view.logInOutButton.setDisable(true);
+		view.pingButton.setDisable(true);
 		view.userNameTF.textProperty().addListener((observable, oldValue, newValue) -> validateUserName(newValue));
 		view.passwordField.textProperty().addListener((observable, oldValue, newValue) -> validatePassword(newValue));
 		view.ipTF.textProperty().addListener((observable, oldValue, newValue) -> validateIP(newValue));
@@ -193,6 +201,7 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			view.saveTaskButton.setDisable(true);
 			view.getToDoButton.setDisable(true);
 			view.listToDosButton.setDisable(true);
+			view.todoIDTF.setDisable(true);
 			result = false;
 		}
 		// if user not logged in, do:
@@ -210,6 +219,7 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			view.saveTaskButton.setDisable(false);
 			view.getToDoButton.setDisable(false);
 			view.listToDosButton.setDisable(false);
+			view.todoIDTF.setDisable(false);
 			result = true;
 		}
 		return result;
@@ -285,6 +295,7 @@ public class App_Controller extends Controller<App_Model, App_View> {
 
 		ipValid = valid;
 		enableDisableButton();
+		enableDisablePingButton();
 	}
 
 	private void validatePort(String newValue) {
@@ -310,6 +321,7 @@ public class App_Controller extends Controller<App_Model, App_View> {
 
 		portValid = valid;
 		enableDisableButton();
+		enableDisablePingButton();
 	}
 
 	private void validateTitle() {
@@ -336,6 +348,11 @@ public class App_Controller extends Controller<App_Model, App_View> {
 	private void enableDisableButton() {
 		boolean valid = userNameValid && passwordValid && ipValid && portValid;
 		view.logInOutButton.setDisable(!valid);
+	}
+
+	private void enableDisablePingButton() {
+		boolean valid = ipValid && portValid;
+		view.pingButton.setDisable(!valid);
 	}
 
 	/**

@@ -35,6 +35,7 @@ public class Server extends Thread {
 		}
 	};
 
+	
 	public void setPort(Integer port) {
 		this.port = port;
 	}

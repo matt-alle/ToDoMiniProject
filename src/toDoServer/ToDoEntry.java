@@ -21,6 +21,18 @@ public class ToDoEntry {
 		this.user = user;
 	}
 
+	public String getTitle() {
+		return title;
+	}
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
 	public int getToDoID() {
 		return toDoID;
 	}
