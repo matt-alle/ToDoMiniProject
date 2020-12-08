@@ -41,6 +41,8 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		view.getToDoButton.setDisable(true);
 		view.listToDosButton.setDisable(true);
 		view.todoIDTF.setDisable(true);
+		view.logInOutButton.setDisable(true);
+		view.pingButton.setDisable(true);
 
 		// Validate preset values at the beginning (if there are any)
 		validateUserName(view.userNameTF.getText());
@@ -156,8 +158,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		serviceLocator = ServiceLocator.getServiceLocator();
 		serviceLocator.getLogger().info("Application controller initialized");
 
-		view.logInOutButton.setDisable(true);
-		view.pingButton.setDisable(true);
 		view.userNameTF.textProperty().addListener((observable, oldValue, newValue) -> validateUserName(newValue));
 		view.passwordField.textProperty().addListener((observable, oldValue, newValue) -> validatePassword(newValue));
 		view.ipTF.textProperty().addListener((observable, oldValue, newValue) -> validateIP(newValue));
