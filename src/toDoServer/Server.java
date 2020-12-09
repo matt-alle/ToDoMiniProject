@@ -3,10 +3,11 @@ package toDoServer;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class Server extends Thread {
 	private Integer port = 50001;
-//	private final Logger logger = Logger.getLogger("");
+	private final Logger logger = Logger.getLogger("");
 
 	/**
 	 * Initialize serverModel when the server is started and pass it on to every
@@ -23,7 +24,7 @@ public class Server extends Thread {
 	@Override
 	public void run() {
 		try (ServerSocket listener = new ServerSocket(port, 10, null)) {
-			// logger.info("Listening on port " + port);
+			 logger.info("Listening on port " + port);
 
 			while (true) {
 				Socket socket = listener.accept();

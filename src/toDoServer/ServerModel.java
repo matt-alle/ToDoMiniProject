@@ -38,7 +38,7 @@ public class ServerModel {
 	/**
 	 * Save and restore server data
 	 */
-	
+
 	// TODO read saved files
 
 	public void writeSaveFileUsers() {
@@ -51,7 +51,7 @@ public class ServerModel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("saved");
+		// System.out.println("saved");
 	}
 
 	// Token is not saved - every user is logged out if the server crashes
@@ -70,7 +70,7 @@ public class ServerModel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("saved");
+		// System.out.println("saved");
 	}
 
 	public String writeToDo(ToDoEntry todo) {

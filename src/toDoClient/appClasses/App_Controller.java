@@ -28,10 +28,15 @@ public class App_Controller extends Controller<App_Model, App_View> {
 	private boolean portValid;
 	private boolean userNameValid;
 	private boolean passwordValid;
+	private boolean titleValid;
+	private boolean descriptionValid;
 	private boolean loggedIn = false; // Is the client currently logged in or not
 
 	public App_Controller(final JavaFX_App_Template main, App_Model model, App_View view) {
 		super(model, view);
+
+		serviceLocator = ServiceLocator.getServiceLocator();
+		serviceLocator.getLogger().info("Application controller initialized");
 
 		// Disable at start:
 		view.taskTitleTF.setDisable(true);
@@ -43,8 +48,10 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		view.todoIDTF.setDisable(true);
 		view.logInOutButton.setDisable(true);
 		view.pingButton.setDisable(true);
+		view.createNewAccountButton.setDisable(true);
+		view.saveTaskButton.setDisable(true);
 
-		// Validate preset values at the beginning (if there are any)
+		// Validate default-values at the beginning (if there are any)
 		validateUserName(view.userNameTF.getText());
 		validateIP(view.ipTF.getText());
 		validatePort(view.portTF.getText());
@@ -61,6 +68,8 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		 * Send messages to client on button-click
 		 */
 		view.pingButton.setOnAction(e -> {
+			// TODO: only checks ping the first time the socket is created - not if IP or
+			// Port are changed afterwards
 			// If asked while logged in -> include token
 			boolean addToken = loggedIn;
 			if (addToken == true) {
@@ -107,12 +116,14 @@ public class App_Controller extends Controller<App_Model, App_View> {
 					}
 				}
 				if (logInOutSwitch == true) {
-					// TODO: maybe automatically log out when windo is closed
+					// TODO: maybe automatically log out when window is closed
 					message = "Logout";
 					model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
 					loggedIn = switchLoginLogoutGUI(loggedIn);
 					model.setToken(null); // delete token
 					view.statusLabel.setText("Logged out");
+					view.taskTitleTF.clear();
+					view.taskDescriptionTA.clear();
 				}
 			} catch (Exception ex) {
 				System.out.println("trouble");
@@ -120,6 +131,10 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		});
 
 		view.saveTaskButton.setOnAction(e -> {
+			// If description area is empty - set to x (TODO something else)
+			if (view.taskDescriptionTA.getText() == "")
+				view.taskDescriptionTA.setText("x");
+			System.out.println("descr: " + view.taskDescriptionTA.getText());
 			message = "CreateToDo" + SEPARATOR + model.getToken() + SEPARATOR + view.taskTitleTF.getText() + SEPARATOR
 					+ view.priorityCB.getSelectionModel().getSelectedItem() + SEPARATOR
 					+ view.taskDescriptionTA.getText();
@@ -155,13 +170,13 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		 * ----------------------------------------------------------------------------------------------------------------------------------------
 		 */
 
-		serviceLocator = ServiceLocator.getServiceLocator();
-		serviceLocator.getLogger().info("Application controller initialized");
-
 		view.userNameTF.textProperty().addListener((observable, oldValue, newValue) -> validateUserName(newValue));
 		view.passwordField.textProperty().addListener((observable, oldValue, newValue) -> validatePassword(newValue));
 		view.ipTF.textProperty().addListener((observable, oldValue, newValue) -> validateIP(newValue));
 		view.portTF.textProperty().addListener((observable, oldValue, newValue) -> validatePort(newValue));
+		view.taskTitleTF.textProperty().addListener((observable, oldValue, newValue) -> validateTitle(newValue));
+		view.taskDescriptionTA.textProperty()
+				.addListener((observable, oldValue, newValue) -> validateDescription(newValue));
 		view.scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
 				int x = old_val.intValue();
@@ -185,9 +200,10 @@ public class App_Controller extends Controller<App_Model, App_View> {
 
 	// Change GUI depending on if user is logged in or logged out
 	public boolean switchLoginLogoutGUI(boolean loggedIn) {
-		// if user already logged in, do:
+		// If user already logged in, do:
 		boolean result;
 		if (loggedIn) {
+			// Login area
 			view.logInOutButton.setText("Log In");
 			view.ipTF.setDisable(false);
 			view.portTF.setDisable(false);
@@ -204,8 +220,9 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			view.todoIDTF.setDisable(true);
 			result = false;
 		}
-		// if user not logged in, do:
+		// If user not logged in, do:
 		else {
+			// Login area
 			view.logInOutButton.setText("Log Out");
 			view.ipTF.setDisable(true);
 			view.portTF.setDisable(true);
@@ -216,7 +233,8 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			view.taskTitleTF.setDisable(false);
 			view.taskDescriptionTA.setDisable(false);
 			view.priorityCB.setDisable(false);
-			view.saveTaskButton.setDisable(false);
+			// (is already disables through change listener)
+			// view.saveTaskButton.setDisable(false);
 			view.getToDoButton.setDisable(false);
 			view.listToDosButton.setDisable(false);
 			view.todoIDTF.setDisable(false);
@@ -324,9 +342,24 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		enableDisablePingButton();
 	}
 
-	private void validateTitle() {
-		// TODO: 3-20 characters
-		// other solution for description?
+	// TODO: handle empty entries
+
+	private void validateTitle(String newValue) {
+		boolean valid = false;
+		if (newValue.length() >= 3 && newValue.length() <= 20)
+			valid = true;
+
+		titleValid = valid;
+		enableDisableSaveTaskButton();
+	}
+
+	private void validateDescription(String newValue) {
+		boolean valid = false;
+		if (newValue.length() >= 0 && newValue.length() <= 255)
+			valid = true;
+
+		descriptionValid = valid;
+		enableDisableSaveTaskButton();
 	}
 
 	// maybe
@@ -348,11 +381,17 @@ public class App_Controller extends Controller<App_Model, App_View> {
 	private void enableDisableButton() {
 		boolean valid = userNameValid && passwordValid && ipValid && portValid;
 		view.logInOutButton.setDisable(!valid);
+		view.createNewAccountButton.setDisable(!valid);
 	}
 
 	private void enableDisablePingButton() {
 		boolean valid = ipValid && portValid;
 		view.pingButton.setDisable(!valid);
+	}
+
+	private void enableDisableSaveTaskButton() {
+		boolean valid = titleValid && descriptionValid;
+		view.saveTaskButton.setDisable(!valid);
 	}
 
 	/**
