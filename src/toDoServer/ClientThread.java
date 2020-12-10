@@ -45,17 +45,18 @@ public class ClientThread extends Thread {
 					switch (messageParts[0]) {
 
 					case "Ping":
-						// System.out.println("casePing");
-						out.print("Result|true");
+						if (socket.isConnected())
+							out.print("Result|true");
+						else
+							out.print("Result|false");
 						break;
 
 					case "CreateLogin":
-						// System.out.println("caseCreateLogin");
 						String userName = messageParts[1];
 						String userPassword = messageParts[2];
 
-						//TODO also disable if only user name is the same?
-						
+						// TODO also disable if only user name is the same?
+
 						// Check it user name is already taken
 						// -> if not, create and save user account
 						boolean freeUserName = true;
@@ -97,19 +98,21 @@ public class ClientThread extends Thread {
 						break;
 
 					case "CreateToDo":
-						// System.out.println("caseCreateToDo");
-						String title = messageParts[2];
-						String priority = messageParts[3];
-						String description = messageParts[4];
-						ToDoEntry toDo = new ToDoEntry(title, priority, description,
-								serverModel.getCurrentUser().getUserName());
-						serverModel.getToDoList().add(toDo);
-						out.print("Result|true|" + toDo.getToDoID());
-						boolean success = true; // TODO: true if...
+						// check if token is valid (TODO for the other parts aswell? or not at all?)
+						if (messageParts[1].equals(serverModel.getCurrentUser().getUserToken())) {
+							String title = messageParts[2];
+							String priority = messageParts[3];
+							String description = messageParts[4];
+							ToDoEntry toDo = new ToDoEntry(title, priority, description,
+									serverModel.getCurrentUser().getUserName());
+							serverModel.getToDoList().add(toDo);
+							out.print("Result|true|" + toDo.getToDoID());
+						} else
+							out.print("Result|false");
+
 						break;
 
 					case "ListToDos":
-						// System.out.println("caseListToDos");
 						String todoList = "Result|true";
 						// create a string with the IDs of all the existing tasks
 						for (int i = 0; i < serverModel.getToDoList().size(); i++) {
@@ -122,7 +125,6 @@ public class ClientThread extends Thread {
 
 					case "GetToDo":
 						// TODO: chose by rank in list of user except ID?
-						// System.out.println("caseGetToDo");
 						int todoID = Integer.valueOf(messageParts[2]); // TODO error handling
 						boolean found = false;
 						int i = 0;
@@ -139,7 +141,6 @@ public class ClientThread extends Thread {
 						break;
 
 					case "Logout":
-						// System.out.println("caseLogout");
 						// delete the token for this user
 						serverModel.getCurrentUser().setUserToken(null);
 						serverModel.setCurrentUser(null);
@@ -147,7 +148,6 @@ public class ClientThread extends Thread {
 						break;
 
 					default:
-						// System.out.println("Unknown Message Type");
 						out.print("Result|false");
 					}
 
@@ -187,14 +187,10 @@ public class ClientThread extends Thread {
 		}
 		// create a random string of letters and numbers
 		for (int i = 0; i < 30; i++) {
-			int random = (int) (Math.random() * 35 - 0.5) + 1;
-			token += characters[random];
+			int randomInt = (int) (Math.random() * 35 - 0.5) + 1;
+			token += characters[randomInt];
 		}
 		return token;
 	}
-
-	// private PrintWriter processMessage(String message) {
-	// Maybe?
-	// }
 
 }
