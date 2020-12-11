@@ -68,8 +68,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		 * Send messages to client on button-click
 		 */
 		view.pingButton.setOnAction(e -> {
-			// TODO: only checks ping the first time the socket is created - not if IP or
-			// Port are changed afterwards
 			// If asked while logged in -> include token
 			boolean addToken = loggedIn;
 			if (addToken == true) {

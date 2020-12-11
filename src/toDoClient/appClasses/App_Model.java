@@ -21,7 +21,9 @@ public class App_Model extends Model {
 	private int value;
 	private String token = "";
 	private String[] serverMessage = new String[10];
-	
+	String ip;
+	int port;
+
 	Socket socket;
 	BufferedReader in;
 	OutputStreamWriter out;
@@ -49,12 +51,18 @@ public class App_Model extends Model {
 	public void sendMessageToServer(String ip, int port, String message) {
 
 		try {
-			// create socket, reader and writer only once
-			if (socket == null) {
+			// (Try to) create socket, reader and writer only if:
+			// - no socket with this IP and port already exist
+			// - the IP or port entered by the user have been changed
+			if (socket == null || (!ip.equals(this.ip) || this.port != port)) {
 				socket = new Socket(ip, port);
 				in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				out = new OutputStreamWriter(socket.getOutputStream());
 			}
+
+			// Save IP and port of currently running socket
+			this.ip = ip;
+			this.port = port;
 
 			out.write(message + "\n");
 			out.flush();
