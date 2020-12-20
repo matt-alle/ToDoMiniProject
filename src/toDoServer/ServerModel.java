@@ -1,6 +1,9 @@
 package toDoServer;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,7 +16,7 @@ public class ServerModel {
 
 	private static String USERS = "Users.sav";
 	private static String TODO = "ToDo.sav";
-	private static String SEPARATOR = ";";
+	private static String SEPARATOR = ";;;";
 
 	public ServerModel() {
 		System.out.println("Initialized new serverModel");
@@ -37,10 +40,8 @@ public class ServerModel {
 
 	/**
 	 * Save and restore server data
+	 * ------------------------------------------------------------------------------------------------------------------
 	 */
-
-	// TODO read saved files
-
 	public void writeSaveFileUsers() {
 		File file = new File(USERS);
 		try (FileWriter fileOut = new FileWriter(file)) {
@@ -77,5 +78,77 @@ public class ServerModel {
 		String line = todo.getToDoID() + SEPARATOR + todo.getTitle() + SEPARATOR + todo.getPriority() + SEPARATOR
 				+ todo.getDescription() + SEPARATOR + todo.getUser() + "\n";
 		return line;
+	}
+
+	public void readSaveFileUser() {
+		File file = new File(USERS);
+		String data = "";
+		try (BufferedReader fileIn = new BufferedReader(new FileReader(file))) {
+			String line = fileIn.readLine();
+			while (line != null) {
+				User user = readUser(line);
+				userList.add(user);
+				line = fileIn.readLine();
+			}
+		} catch (FileNotFoundException e) {
+			data = "Save file does not exist";
+		} catch (IOException e) {
+			data = e.getClass().toString();
+		}
+	}
+
+	public User readUser(String line) {
+		String[] attributes = line.split(SEPARATOR);
+		int userID = -999;
+		String userName = "-not found-";
+		String userPassword = "X";
+		try {
+			userID = Integer.valueOf(attributes[0]);
+			userName = attributes[1];
+			userPassword = attributes[2];
+		} catch (Exception e) {
+			userName = "-Error in Line-";  // TODO error handling
+		}
+		User user = new User(userName, userPassword, null);
+		user.setID(userID); // restore ID
+		return user;
+	}
+
+	public void readSaveFileToDo() {
+		File file = new File(TODO);
+		String data = "";
+		try (BufferedReader fileIn = new BufferedReader(new FileReader(file))) {
+			String line = fileIn.readLine();
+			while (line != null) {
+				ToDoEntry todo = readToDo(line);
+				toDoList.add(todo);
+				line = fileIn.readLine();
+			}
+		} catch (FileNotFoundException e) {
+			data = "Save file does not exist";
+		} catch (IOException e) {
+			data = e.getClass().toString();
+		}
+	}
+
+	public ToDoEntry readToDo(String line) {
+		String[] attributes = line.split(SEPARATOR);
+		int todoID = -999;
+		String todoTitle = "-not found-";
+		String todoPriority = "-";
+		String todoDescription = "-";
+		String todoUser = "-";
+		try {
+			todoID = Integer.valueOf(attributes[0]);
+			todoTitle = attributes[1];
+			todoPriority = attributes[2];
+			todoDescription = attributes[3];
+			todoUser = attributes[4];
+		} catch (Exception e) {
+			todoTitle = "-Error in Line-";
+		}
+		ToDoEntry todo = new ToDoEntry(todoTitle, todoPriority, todoDescription, todoUser);
+		todo.setID(todoID); // restore ID
+		return todo;
 	}
 }

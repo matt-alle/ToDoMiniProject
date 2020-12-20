@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import toDoClient.ServiceLocator;
 import toDoClient.abstractClasses.View;
 import toDoClient.commonClasses.Translator;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -36,9 +37,10 @@ public class App_View extends View<App_Model> {
 	Menu menuFileLanguage;
 	Menu menuHelp;
 
-	Label accAreaTitle;
 	Label taskAreaTitle;
+	Label statusTitle;
 	Label statusLabel;
+	Label selectID;
 
 	TextField ipTF;
 	TextField portTF;
@@ -56,15 +58,15 @@ public class App_View extends View<App_Model> {
 	Button saveTaskButton;
 	Button pingButton;
 	Button listToDosButton;
-	Button getToDoButton;
+
+	ComboBox<priority> priorityCB;
+	ComboBox<Integer> todoSelectionCB;
 
 	ScrollBar scrollBar;
 
 	private enum priority { // maybe move later
 		LOW, MEDIUM, HIGH
 	};
-
-	ComboBox<priority> priorityCB;
 
 	public App_View(Stage stage, App_Model model) {
 		super(stage, model);
@@ -95,6 +97,7 @@ public class App_View extends View<App_Model> {
 		menuBar.getMenus().addAll(menuFile, menuHelp);
 
 		VBox root = new VBox();
+		root.setId("root");
 		root.getChildren().add(menuBar);
 
 		root.getChildren().add(createAccountArea());
@@ -111,18 +114,14 @@ public class App_View extends View<App_Model> {
 		GridPane pane = new GridPane();
 
 		ipTF = new TextField("127.0.0.1"); // change later
-		// ipTF.setId("ipTF");
-		ipTF.setPromptText("IP Address");
 		portTF = new TextField("50001"); // change later
-		portTF.setPromptText("Port");
 		userNameTF = new TextField("aa.bb@cc.dd");
-		// userNameTF.setPromptText();
 		passwordField = new PasswordField();
-		passwordField.setPromptText("Password");
-		logInOutButton = new Button("Log In");
+		logInOutButton = new Button();
 		createNewAccountButton = new Button();
-		pingButton = new Button("Ping");
-		statusLabel = new Label("Status");
+		pingButton = new Button();
+		statusTitle = new Label();
+		statusLabel = new Label();
 
 		pane.add(ipTF, 0, 0);
 		pane.add(portTF, 1, 0);
@@ -131,7 +130,8 @@ public class App_View extends View<App_Model> {
 		pane.add(passwordField, 1, 1);
 		pane.add(logInOutButton, 2, 1);
 		pane.add(createNewAccountButton, 0, 2);
-		pane.add(statusLabel, 1, 2, 2, 1);
+		pane.add(statusTitle, 1, 2);
+		pane.add(statusLabel, 2, 2, 2, 1);
 
 		return pane;
 	}
@@ -139,23 +139,20 @@ public class App_View extends View<App_Model> {
 	private GridPane createTaskArea() {
 		GridPane pane = new GridPane();
 
-		taskAreaTitle = new Label("Tasks:");
+		taskAreaTitle = new Label();
 		taskTitleTF = new TextField();
-		taskTitleTF.setPromptText("Enter Title");
 		todoIDTF = new TextField();
-		todoIDTF.setPromptText("TODO ID");
 		priorityCB = new ComboBox<>();
-		priorityCB.setPromptText("Select Priority");
 		taskDescriptionTA = new TextArea();
-		taskDescriptionTA.setPromptText("Enter Task Description");
 		taskDescriptionTA.setWrapText(true);
 		todoDisplayTA = new TextArea();
 		todoDisplayTA.setWrapText(true);
 		todoDisplayTA.setEditable(false);
-		saveTaskButton = new Button("Save Task");
-		listToDosButton = new Button("List To Do's");
-		getToDoButton = new Button("Get To Do");
+		saveTaskButton = new Button();
+		listToDosButton = new Button();
 		scrollBar = new ScrollBar();
+		selectID = new Label();
+		todoSelectionCB = new ComboBox<>();
 
 		priorityCB.getItems().addAll(priority.values());
 
@@ -165,10 +162,14 @@ public class App_View extends View<App_Model> {
 		pane.add(taskDescriptionTA, 0, 2, 4, 1);
 		pane.add(saveTaskButton, 0, 3);
 		pane.add(listToDosButton, 0, 4);
-		pane.add(todoIDTF, 1, 4);
-		pane.add(getToDoButton, 2, 4);
+		pane.add(selectID, 1, 4);
+		pane.add(todoSelectionCB, 2, 4);
 		pane.add(scrollBar, 3, 4);
 		pane.add(todoDisplayTA, 0, 5, 4, 1);
+
+		// getToDoButton.setPrefSize(130, 25);
+
+		// GridPane.setMargin(getToDoButton, new Insets(15, 15, 15, 15));
 
 		return pane;
 	}
@@ -181,13 +182,28 @@ public class App_View extends View<App_Model> {
 		menuFileLanguage.setText(t.getString("program.menu.file.language"));
 		menuHelp.setText(t.getString("program.menu.help"));
 
+		// Labels
+		taskAreaTitle.setText(t.getString("label.taskAreaTitle"));
+		statusTitle.setText(t.getString("label.statusTitle"));
+		statusLabel.setText(t.getString("label.statusLabel"));
+		selectID.setText(t.getString("label.selectID"));
+
+		// Text Fields
+		ipTF.setPromptText(t.getString("textField.ipTF"));
+		portTF.setPromptText(t.getString("textField.portTF"));
+		userNameTF.setPromptText(t.getString("textField.userNameTF"));
+		taskTitleTF.setPromptText(t.getString("textField.taskTitleTF"));
+		todoIDTF.setPromptText(t.getString("textField.todoIDTF"));
+
+		// Text Area
+		taskDescriptionTA.setPromptText(t.getString("textArea.taskDescriptionTA"));
+
 		// Buttons
+		logInOutButton.setText(t.getString("button.logInOutButton"));
 		createNewAccountButton.setText(t.getString("button.createNewAccount"));
-
-		// TextFields
-		userNameTF.setPromptText(t.getString("textField.username"));
-
-		// TODO: for all texts
+		saveTaskButton.setText(t.getString("button.saveTaskButton"));
+		pingButton.setText(t.getString("button.pingButton"));
+		listToDosButton.setText(t.getString("button.listToDosButton"));
 
 		stage.setTitle(t.getString("program.name"));
 	}

@@ -32,7 +32,7 @@ public class Splash_View extends View<Splash_Model> {
         BorderPane root = new BorderPane();
         root.setId("splash");
 
-        lblStatus = new Label("Woof");
+        lblStatus = new Label();
         root.setCenter(lblStatus);
         
         progress = new ProgressBar();

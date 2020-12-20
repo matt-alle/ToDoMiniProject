@@ -23,8 +23,12 @@ public class Server extends Thread {
 
 	@Override
 	public void run() {
+		// Restore data at start
+		serverModel.readSaveFileUser();
+		serverModel.readSaveFileToDo();
+
 		try (ServerSocket listener = new ServerSocket(port, 10, null)) {
-			 logger.info("Listening on port " + port);
+			logger.info("Listening on port " + port);
 
 			while (true) {
 				Socket socket = listener.accept();
@@ -36,7 +40,6 @@ public class Server extends Thread {
 		}
 	};
 
-	
 	public void setPort(Integer port) {
 		this.port = port;
 	}

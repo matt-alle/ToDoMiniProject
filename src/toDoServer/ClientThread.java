@@ -65,7 +65,7 @@ public class ClientThread extends Thread {
 								freeUserName = false;
 						}
 						if (freeUserName) {
-							// create and add user without token
+							// Create and add user without token (TODO encrypt password?)
 							User user = new User(userName, userPassword, null);
 							serverModel.getUserList().add(user);
 						}
@@ -114,23 +114,32 @@ public class ClientThread extends Thread {
 
 					case "ListToDos":
 						String todoList = "Result|true";
+						boolean listFound = false;
 						// create a string with the IDs of all the existing tasks
 						for (int i = 0; i < serverModel.getToDoList().size(); i++) {
 							if (serverModel.getCurrentUser().getUserName()
-									.equals(serverModel.getToDoList().get(i).getUser()))
+									.equals(serverModel.getToDoList().get(i).getUser())) {
 								todoList += ("|" + serverModel.getToDoList().get(i).getToDoID());
+								listFound = true;
+							}
 						}
-						out.print(todoList);
+						// If no ToDo's for this user found -> return false
+						if (listFound)
+							out.print(todoList);
+						else
+							out.print("Result|false");
 						break;
 
 					case "GetToDo":
 						// TODO: chose by rank in list of user except ID?
-						int todoID = Integer.valueOf(messageParts[2]); // TODO error handling
+						int todoID = Integer.valueOf(messageParts[2]); // TODO error handling (crashes if field is
+																		// empty)
 						boolean found = false;
 						int i = 0;
 						while (i < serverModel.getToDoList().size() && !found) {
+							// ID has to match and logged in user must be the creator of the todo entry
 							if (todoID == serverModel.getToDoList().get(i).getToDoID() && serverModel.getToDoList()
-									.get(i).getUser() == serverModel.getCurrentUser().getUserName()) {
+									.get(i).getUser().equals(serverModel.getCurrentUser().getUserName())) {
 								out.print("Result|true|" + serverModel.getToDoList().get(i).toString());
 								found = true;
 							}
@@ -141,10 +150,14 @@ public class ClientThread extends Thread {
 						break;
 
 					case "Logout":
-						// delete the token for this user
-						serverModel.getCurrentUser().setUserToken(null);
-						serverModel.setCurrentUser(null);
-						out.print("Result|true");
+						try {
+							// Delete the token for this user
+							serverModel.getCurrentUser().setUserToken(null);
+							serverModel.setCurrentUser(null);
+							out.print("Result|true");
+						} catch (Exception e) {
+							out.print("Result|false");
+						}
 						break;
 
 					default:
@@ -162,7 +175,7 @@ public class ClientThread extends Thread {
 					logger.warning(ex.toString());
 				}
 
-				// at the end to immediately stop if the message becomes null
+				// At the end to immediately stop if the message becomes null
 				message = in.readLine();
 			}
 
@@ -171,7 +184,7 @@ public class ClientThread extends Thread {
 			out.flush();
 			logger.warning(e.toString());
 		}
-		// TODO: move somewhere else
+		// TODO: move somewhere else? (here saves after client is closed)
 		serverModel.writeSaveFileUsers();
 		serverModel.writeSaveFileToDo();
 	}

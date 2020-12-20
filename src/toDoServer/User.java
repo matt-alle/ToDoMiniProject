@@ -2,7 +2,7 @@ package toDoServer;
 
 public class User {
 
-	private final int userID;
+	private int userID;
 	private static int highestID = 0;
 	private String userName;
 	private String userPassword;
@@ -46,7 +46,12 @@ public class User {
 	public int getUserID() {
 		return userID;
 	}
-	
+
+	// only to restore data (had to remove "final")
+	public void setID(int userID) {
+		this.userID = userID;
+	}
+
 	@Override
 	public String toString() {
 		String toDo = this.userName + "|" + this.userPassword + "|" + this.userToken;

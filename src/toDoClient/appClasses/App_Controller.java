@@ -43,7 +43,7 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		view.taskDescriptionTA.setDisable(true);
 		view.priorityCB.setDisable(true);
 		view.saveTaskButton.setDisable(true);
-		view.getToDoButton.setDisable(true);
+		view.todoSelectionCB.setDisable(true);
 		view.listToDosButton.setDisable(true);
 		view.todoIDTF.setDisable(true);
 		view.logInOutButton.setDisable(true);
@@ -129,9 +129,8 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		});
 
 		view.saveTaskButton.setOnAction(e -> {
-			// If description area is empty - set to x (TODO something else)
 			if (view.taskDescriptionTA.getText() == "")
-				view.taskDescriptionTA.setText("x");
+				view.taskDescriptionTA.setText("-");
 			System.out.println("descr: " + view.taskDescriptionTA.getText());
 			message = "CreateToDo" + SEPARATOR + model.getToken() + SEPARATOR + view.taskTitleTF.getText() + SEPARATOR
 					+ view.priorityCB.getSelectionModel().getSelectedItem() + SEPARATOR
@@ -145,15 +144,24 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			message = "ListToDos" + SEPARATOR + model.getToken();
 			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
 			String todoList = "";
+
+			// view.todoSelectionCB.getSelectionModel().clearSelection();
+			// TODO view.todoSelectionCB.getItems().clear(); // if I clear it - I trigger
+			// it...
 			for (int i = 2; i < model.getServerMessageParts().length; i++) {
 				todoList += model.getServerMessageParts()[i] + " / ";
+				// Add the ID to the combo box if not already in the list
+				if (!view.todoSelectionCB.getItems().contains(Integer.valueOf(model.getServerMessageParts()[i])))
+					view.todoSelectionCB.getItems().add(Integer.valueOf(model.getServerMessageParts()[i]));
 			}
-			view.todoDisplayTA.setText(todoList);
+			view.todoDisplayTA.setText("ToDo ID's of " + view.userNameTF.getText() + ":\n\n" + todoList);
 		});
 
-		view.getToDoButton.setOnAction(e -> {
-			// TODO: find better way to select todo (from a list?)
-			message = "GetToDo" + SEPARATOR + model.getToken() + SEPARATOR + view.todoIDTF.getText();
+		// TODO: atm shows all the IDs - no matter who is logged in / problems with
+		// .clear
+		view.todoSelectionCB.setOnAction(e -> {
+			message = "GetToDo" + SEPARATOR + model.getToken() + SEPARATOR
+					+ view.todoSelectionCB.getSelectionModel().getSelectedItem();
 			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
 			String todo = "";
 			String line = "====================================================\n";
@@ -177,8 +185,8 @@ public class App_Controller extends Controller<App_Model, App_View> {
 				.addListener((observable, oldValue, newValue) -> validateDescription(newValue));
 		view.scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-				int x = old_val.intValue();
-				int y = new_val.intValue();
+				int x = (int) old_val.intValue() / 2;
+				int y = (int) new_val.intValue() / 2;
 				System.out.println(x);
 				System.out.println(y);
 				// TODO (not really working yet) ----
@@ -193,7 +201,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 				// ----
 			}
 		});
-
 	}
 
 	// Change GUI depending on if user is logged in or logged out
@@ -201,39 +208,41 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		// If user already logged in, do:
 		boolean result;
 		if (loggedIn) {
-			// Login area
+			// Login area:
 			view.logInOutButton.setText("Log In");
 			view.ipTF.setDisable(false);
 			view.portTF.setDisable(false);
 			view.userNameTF.setDisable(false);
 			view.passwordField.setDisable(false);
 			view.createNewAccountButton.setDisable(false);
-			// ToDo area
+			// ToDo area:
 			view.taskTitleTF.setDisable(true);
 			view.taskDescriptionTA.setDisable(true);
 			view.priorityCB.setDisable(true);
 			view.saveTaskButton.setDisable(true);
-			view.getToDoButton.setDisable(true);
+			view.todoSelectionCB.setDisable(true);
 			view.listToDosButton.setDisable(true);
 			view.todoIDTF.setDisable(true);
+			view.todoDisplayTA.clear();
+			// TODO: disable scroll bar (if implemented)
 			result = false;
 		}
 		// If user not logged in, do:
 		else {
-			// Login area
+			// Login area:
 			view.logInOutButton.setText("Log Out");
 			view.ipTF.setDisable(true);
 			view.portTF.setDisable(true);
 			view.userNameTF.setDisable(true);
 			view.passwordField.setDisable(true);
 			view.createNewAccountButton.setDisable(true);
-			// ToDo area
+			// ToDo area:
 			view.taskTitleTF.setDisable(false);
 			view.taskDescriptionTA.setDisable(false);
 			view.priorityCB.setDisable(false);
 			// (is already disables through change listener)
 			// view.saveTaskButton.setDisable(false);
-			view.getToDoButton.setDisable(false);
+			view.todoSelectionCB.setDisable(false);
 			view.listToDosButton.setDisable(false);
 			view.todoIDTF.setDisable(false);
 			result = true;
@@ -340,8 +349,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		enableDisablePingButton();
 	}
 
-	// TODO: handle empty entries
-
 	private void validateTitle(String newValue) {
 		boolean valid = false;
 		if (newValue.length() >= 3 && newValue.length() <= 20)
@@ -360,10 +367,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		enableDisableSaveTaskButton();
 	}
 
-	// maybe
-	private void logInStatus(boolean tf) {
-		// TODO: based on user logged in or out: activate/deactivate controls
-	}
 
 	// Changes text color in selected text field depending on "valid" value
 	private void updateTextColor(TextField textField, boolean valid) {

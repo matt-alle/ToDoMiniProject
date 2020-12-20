@@ -2,7 +2,7 @@ package toDoServer;
 
 public class ToDoEntry {
 
-	private final int toDoID;
+	private int toDoID;
 	private static int highestID = 0;
 	private String title;
 	private String priority;
@@ -51,6 +51,11 @@ public class ToDoEntry {
 
 	public String getUser() {
 		return this.user;
+	}
+
+	// only to restore data (had to remove "final")
+	public void setID(int toDoID) {
+		this.toDoID = toDoID;
 	}
 
 	@Override
