@@ -46,7 +46,7 @@ public class App_View extends View<App_Model> {
 	TextField portTF;
 	TextField userNameTF;
 	TextField taskTitleTF;
-	TextField todoIDTF;
+//	TextField todoIDTF;
 
 	PasswordField passwordField;
 
@@ -103,6 +103,8 @@ public class App_View extends View<App_Model> {
 		root.getChildren().add(createAccountArea());
 		root.getChildren().add(createTaskArea());
 
+		root.setSpacing(15);
+
 		updateTexts();
 
 		Scene scene = new Scene(root);
@@ -113,7 +115,7 @@ public class App_View extends View<App_Model> {
 	private GridPane createAccountArea() {
 		GridPane pane = new GridPane();
 
-		ipTF = new TextField("127.0.0.1"); // change later
+		ipTF = new TextField("127.0.0.1"); // change later TODO
 		portTF = new TextField("50001"); // change later
 		userNameTF = new TextField("aa.bb@cc.dd");
 		passwordField = new PasswordField();
@@ -122,6 +124,8 @@ public class App_View extends View<App_Model> {
 		pingButton = new Button();
 		statusTitle = new Label();
 		statusLabel = new Label();
+		
+		createNewAccountButton.setId("createNewAccountButton");
 
 		pane.add(ipTF, 0, 0);
 		pane.add(portTF, 1, 0);
@@ -131,7 +135,21 @@ public class App_View extends View<App_Model> {
 		pane.add(logInOutButton, 2, 1);
 		pane.add(createNewAccountButton, 0, 2);
 		pane.add(statusTitle, 1, 2);
-		pane.add(statusLabel, 2, 2, 2, 1);
+		pane.add(statusLabel, 2, 2);
+
+		GridPane.setMargin(ipTF, new Insets(5, 5, 5, 5));
+		GridPane.setMargin(portTF, new Insets(5, 5, 5, 5));
+		GridPane.setMargin(userNameTF, new Insets(5, 5, 5, 5));
+		GridPane.setMargin(passwordField, new Insets(5, 5, 5, 5));
+		GridPane.setMargin(pingButton, new Insets(5, 5, 5, 5));
+		GridPane.setMargin(logInOutButton, new Insets(5, 5, 5, 5));
+		GridPane.setMargin(createNewAccountButton, new Insets(5, 5, 5, 5));
+		GridPane.setMargin(statusTitle, new Insets(5, 5, 5, 100));
+		GridPane.setMargin(statusLabel, new Insets(5, 5, 5, 5));
+		
+		pingButton.setPrefWidth(70);
+		logInOutButton.setPrefWidth(70);
+		createNewAccountButton.setPrefWidth(140);
 
 		return pane;
 	}
@@ -141,7 +159,7 @@ public class App_View extends View<App_Model> {
 
 		taskAreaTitle = new Label();
 		taskTitleTF = new TextField();
-		todoIDTF = new TextField();
+	//	todoIDTF = new TextField();
 		priorityCB = new ComboBox<>();
 		taskDescriptionTA = new TextArea();
 		taskDescriptionTA.setWrapText(true);
@@ -164,12 +182,26 @@ public class App_View extends View<App_Model> {
 		pane.add(listToDosButton, 0, 4);
 		pane.add(selectID, 1, 4);
 		pane.add(todoSelectionCB, 2, 4);
-		pane.add(scrollBar, 3, 4);
+		// pane.add(scrollBar, 3, 4);
 		pane.add(todoDisplayTA, 0, 5, 4, 1);
 
-		// getToDoButton.setPrefSize(130, 25);
-
-		// GridPane.setMargin(getToDoButton, new Insets(15, 15, 15, 15));
+		GridPane.setMargin(taskAreaTitle, new Insets(5, 5, 5, 5));
+		GridPane.setMargin(taskTitleTF, new Insets(5, 5, 5, 5));
+		GridPane.setMargin(priorityCB, new Insets(5, 5, 5, 5));
+		GridPane.setMargin(taskDescriptionTA, new Insets(5, 5, 5, 5));
+		GridPane.setMargin(todoDisplayTA, new Insets(5, 5, 5, 5));
+		GridPane.setMargin(saveTaskButton, new Insets(5, 5, 5, 5));
+		GridPane.setMargin(listToDosButton, new Insets(20, 5, 5, 5));
+		GridPane.setMargin(selectID, new Insets(20, 5, 5, 70));
+		GridPane.setMargin(todoSelectionCB, new Insets(20, 5, 5, 0));
+		GridPane.setMargin(priorityCB, new Insets(5, 5, 5, 5));
+		
+		taskTitleTF.setPrefWidth(300);
+		priorityCB.setPrefWidth(90);
+		saveTaskButton.setPrefWidth(90);
+		listToDosButton.setPrefWidth(110);
+		selectID.setPrefWidth(50);
+		todoSelectionCB.setPrefWidth(60);
 
 		return pane;
 	}
@@ -193,7 +225,6 @@ public class App_View extends View<App_Model> {
 		portTF.setPromptText(t.getString("textField.portTF"));
 		userNameTF.setPromptText(t.getString("textField.userNameTF"));
 		taskTitleTF.setPromptText(t.getString("textField.taskTitleTF"));
-		todoIDTF.setPromptText(t.getString("textField.todoIDTF"));
 
 		// Text Area
 		taskDescriptionTA.setPromptText(t.getString("textArea.taskDescriptionTA"));

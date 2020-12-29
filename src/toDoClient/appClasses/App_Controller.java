@@ -45,7 +45,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		view.saveTaskButton.setDisable(true);
 		view.todoSelectionCB.setDisable(true);
 		view.listToDosButton.setDisable(true);
-		view.todoIDTF.setDisable(true);
 		view.logInOutButton.setDisable(true);
 		view.pingButton.setDisable(true);
 		view.createNewAccountButton.setDisable(true);
@@ -145,30 +144,28 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
 			String todoList = "";
 
-			// view.todoSelectionCB.getSelectionModel().clearSelection();
-			// TODO view.todoSelectionCB.getItems().clear(); // if I clear it - I trigger
-			// it...
+			// Update ComboBox data with ID of this user (only available/updated after todo's are listed)
+			view.todoSelectionCB.getItems().clear();
 			for (int i = 2; i < model.getServerMessageParts().length; i++) {
 				todoList += model.getServerMessageParts()[i] + " / ";
-				// Add the ID to the combo box if not already in the list
-				if (!view.todoSelectionCB.getItems().contains(Integer.valueOf(model.getServerMessageParts()[i])))
-					view.todoSelectionCB.getItems().add(Integer.valueOf(model.getServerMessageParts()[i]));
+				view.todoSelectionCB.getItems().add(Integer.valueOf(model.getServerMessageParts()[i]));
 			}
 			view.todoDisplayTA.setText("ToDo ID's of " + view.userNameTF.getText() + ":\n\n" + todoList);
 		});
 
-		// TODO: atm shows all the IDs - no matter who is logged in / problems with
-		// .clear
 		view.todoSelectionCB.setOnAction(e -> {
-			message = "GetToDo" + SEPARATOR + model.getToken() + SEPARATOR
-					+ view.todoSelectionCB.getSelectionModel().getSelectedItem();
-			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
-			String todo = "";
-			String line = "====================================================\n";
-			for (int i = 2; i < model.getServerMessageParts().length; i++) {
-				todo += line + model.getServerMessageParts()[i] + "\n";
+			// Only execute if an ID is selected
+			if (view.todoSelectionCB.getSelectionModel().getSelectedItem() != null) {
+				message = "GetToDo" + SEPARATOR + model.getToken() + SEPARATOR
+						+ view.todoSelectionCB.getSelectionModel().getSelectedItem();
+				model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+				String todo = "";
+				String line = "====================================================\n";
+				for (int i = 2; i < model.getServerMessageParts().length; i++) {
+					todo += line + model.getServerMessageParts()[i] + "\n";
+				}
+				view.todoDisplayTA.setText(todo);
 			}
-			view.todoDisplayTA.setText(todo);
 		});
 
 		/**
@@ -222,7 +219,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			view.saveTaskButton.setDisable(true);
 			view.todoSelectionCB.setDisable(true);
 			view.listToDosButton.setDisable(true);
-			view.todoIDTF.setDisable(true);
 			view.todoDisplayTA.clear();
 			// TODO: disable scroll bar (if implemented)
 			result = false;
@@ -244,7 +240,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			// view.saveTaskButton.setDisable(false);
 			view.todoSelectionCB.setDisable(false);
 			view.listToDosButton.setDisable(false);
-			view.todoIDTF.setDisable(false);
 			result = true;
 		}
 		return result;
@@ -366,7 +361,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		descriptionValid = valid;
 		enableDisableSaveTaskButton();
 	}
-
 
 	// Changes text color in selected text field depending on "valid" value
 	private void updateTextColor(TextField textField, boolean valid) {

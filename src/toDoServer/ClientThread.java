@@ -26,7 +26,7 @@ public class ClientThread extends Thread {
 	public void run() {
 		try {
 
-			// create reader and writer only once
+			// Create reader and writer only once
 			if (in == null) {
 				in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				out = new PrintWriter(socket.getOutputStream());
@@ -35,7 +35,7 @@ public class ClientThread extends Thread {
 			logger.info("Request from client " + socket.getInetAddress().toString() + "for server "
 					+ socket.getLocalAddress().toString());
 
-			// process messages as long as they are not null
+			// Process messages as long as they are not null
 			String message = in.readLine();
 			while (message != null) {
 				// Split message in parts to process it
