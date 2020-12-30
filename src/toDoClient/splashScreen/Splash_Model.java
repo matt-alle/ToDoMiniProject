@@ -35,25 +35,25 @@ public class Splash_Model extends Model {
 
 			// Create the service locator to hold our resources
 			serviceLocator = ServiceLocator.getServiceLocator();
-			TimeUnit.MILLISECONDS.sleep(100); // just for fun -> TODO: remove later
+			TimeUnit.MILLISECONDS.sleep(200); // just for fun -> TODO: remove later
 			this.updateProgress(2, 6);
 
 			// Initialize the resources in the service locator
 			serviceLocator.setLogger(configureLogging());
-			TimeUnit.MILLISECONDS.sleep(100);
+			TimeUnit.MILLISECONDS.sleep(200);
 			this.updateProgress(3, 6);
 
 			serviceLocator.setConfiguration(new Configuration());
-			TimeUnit.MILLISECONDS.sleep(100);
+			TimeUnit.MILLISECONDS.sleep(200);
 			this.updateProgress(4, 6);
 
 			String language = serviceLocator.getConfiguration().getOption("Language");
 			serviceLocator.setTranslator(new Translator(language));
-			TimeUnit.MILLISECONDS.sleep(100);
+			TimeUnit.MILLISECONDS.sleep(200);
 			this.updateProgress(5, 6);
 
 			// ... more resources would go here...
-			TimeUnit.MILLISECONDS.sleep(100);
+			TimeUnit.MILLISECONDS.sleep(200);
 			this.updateProgress(6, 6);
 
 			return null;

@@ -44,6 +44,7 @@ public class ClientThread extends Thread {
 				try {
 					switch (messageParts[0]) {
 
+					// TODO check token if logged in?
 					case "Ping":
 						if (socket.isConnected())
 							out.print("Result|true");
@@ -97,8 +98,29 @@ public class ClientThread extends Thread {
 
 						break;
 
+					case "ChangePassword":
+						// Check if token is valid
+						if (messageParts[1].equals(serverModel.getCurrentUser().getUserToken())) {
+							int l = 0;
+							boolean changed = false;
+							String newPassword = messageParts[2];
+							while (l < serverModel.getUserList().size() && !changed) {
+								if (serverModel.getUserList().get(l).getUserName()
+										.equals(serverModel.getCurrentUser().getUserName())) {
+									serverModel.getUserList().get(l).setUserPassword(newPassword);
+									changed = true;
+								}
+								l++;
+							}
+							if (changed)
+								out.print("Result|true");
+							else
+								out.print("Result|false");
+						} else
+							out.print("Result|false");
+						break;
+
 					case "CreateToDo":
-						// check if token is valid (TODO for the other parts aswell? or not at all?)
 						if (messageParts[1].equals(serverModel.getCurrentUser().getUserToken())) {
 							String title = messageParts[2];
 							String priority = messageParts[3];
@@ -113,39 +135,51 @@ public class ClientThread extends Thread {
 						break;
 
 					case "ListToDos":
-						String todoList = "Result|true";
-						boolean listFound = false;
-						// create a string with the IDs of all the existing tasks
-						for (int i = 0; i < serverModel.getToDoList().size(); i++) {
-							if (serverModel.getCurrentUser().getUserName()
-									.equals(serverModel.getToDoList().get(i).getUser())) {
-								todoList += ("|" + serverModel.getToDoList().get(i).getToDoID());
-								listFound = true;
+						if (messageParts[1].equals(serverModel.getCurrentUser().getUserToken())) {
+							String todoList = "Result|true";
+							boolean listFound = false;
+							// create a string with the IDs of all the existing tasks
+							for (int i = 0; i < serverModel.getToDoList().size(); i++) {
+								if (serverModel.getCurrentUser().getUserName()
+										.equals(serverModel.getToDoList().get(i).getUser())) {
+									todoList += ("|" + serverModel.getToDoList().get(i).getToDoID());
+									listFound = true;
+								}
 							}
-						}
-						// If no ToDo's for this user found -> return false
-						if (listFound)
-							out.print(todoList);
-						else
+							// If no ToDo's for this user found -> return false
+							if (listFound)
+								out.print(todoList);
+							else
+								out.print("Result|false");
+						} else
 							out.print("Result|false");
 						break;
 
 					case "GetToDo":
 						// TODO: chose by rank in list of user except ID?
-						int todoID = Integer.valueOf(messageParts[2]); // TODO error handling (crashes if field is
-																		// empty)
-						boolean found = false;
-						int i = 0;
-						while (i < serverModel.getToDoList().size() && !found) {
-							// ID has to match and logged in user must be the creator of the todo entry
-							if (todoID == serverModel.getToDoList().get(i).getToDoID() && serverModel.getToDoList()
-									.get(i).getUser().equals(serverModel.getCurrentUser().getUserName())) {
-								out.print("Result|true|" + serverModel.getToDoList().get(i).toString());
-								found = true;
+						if (messageParts[1].equals(serverModel.getCurrentUser().getUserToken())) {
+							try {
+								int todoID = Integer.valueOf(messageParts[2]); // TODO error handling (crashes if field
+																				// is
+																				// empty)
+								boolean found = false;
+								int i = 0;
+								while (i < serverModel.getToDoList().size() && !found) {
+									// ID has to match and logged in user must be the creator of the todo entry
+									if (todoID == serverModel.getToDoList().get(i).getToDoID()
+											&& serverModel.getToDoList().get(i).getUser()
+													.equals(serverModel.getCurrentUser().getUserName())) {
+										out.print("Result|true|" + serverModel.getToDoList().get(i).toString());
+										found = true;
+									}
+									i++;
+								}
+								if (!found)
+									out.print("Result|false");
+							} catch (Exception ex) {
+								out.print("Result|false");
 							}
-							i++;
-						}
-						if (!found)
+						} else
 							out.print("Result|false");
 						break;
 
@@ -158,6 +192,27 @@ public class ClientThread extends Thread {
 						} catch (Exception e) {
 							out.print("Result|false");
 						}
+						break;
+
+					case "DeleteToDo":
+						if (messageParts[1].equals(serverModel.getCurrentUser().getUserToken())) {
+							int id = Integer.valueOf(messageParts[2]);
+							boolean deleted = false;
+							int k = 0;
+							// Search the todo with the corresponding ID and delete it
+							while (k < serverModel.getToDoList().size() && !deleted) {
+								if (serverModel.getToDoList().get(k).getToDoID() == id) {
+									serverModel.getToDoList().remove(k);
+									deleted = true;
+								}
+								k++;
+							}
+							if (deleted)
+								out.print("Result|true");
+							else
+								out.print("Result|false");
+						} else
+							out.print("Result|false");
 						break;
 
 					default:

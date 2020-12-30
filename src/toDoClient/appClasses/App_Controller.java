@@ -49,18 +49,14 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		view.pingButton.setDisable(true);
 		view.createNewAccountButton.setDisable(true);
 		view.saveTaskButton.setDisable(true);
+		view.changePasswordButton.setDisable(true);
+		view.deleteToDoButton.setDisable(true);
 
 		// Validate default-values at the beginning (if there are any)
 		validateUserName(view.userNameTF.getText());
 		validateIP(view.ipTF.getText());
 		validatePort(view.portTF.getText());
 
-		// TODO - if I want
-		// Open a new window to create new account; hide main window
-		// view.createNewAccountButton.setOnAction(e -> {
-		// view.getStage().hide();
-		// main.startCreateAccount();
-		// });
 
 		/**
 		 * --------------------------------------------------------------------------------------------------
@@ -94,7 +90,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 
 		// Depending on logIn-status: button goes from logged out to logged in or vice
 		// versa
-
 		view.logInOutButton.setOnAction(e -> {
 			boolean logInOutSwitch = loggedIn;
 			try {
@@ -127,6 +122,13 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			}
 		});
 
+		view.changePasswordButton.setOnAction(e -> {
+			message = "ChangePassword" + SEPARATOR + model.getToken() + SEPARATOR + view.passwordField.getText();
+			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+			if (model.getServerMessageParts()[1].equals("true"))
+				view.statusLabel.setText("Password Changed");
+		});
+
 		view.saveTaskButton.setOnAction(e -> {
 			if (view.taskDescriptionTA.getText() == "")
 				view.taskDescriptionTA.setText("-");
@@ -144,7 +146,8 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
 			String todoList = "";
 
-			// Update ComboBox data with ID of this user (only available/updated after todo's are listed)
+			// Update ComboBox data with ID of this user (only available/updated after
+			// todo's are listed)
 			view.todoSelectionCB.getItems().clear();
 			for (int i = 2; i < model.getServerMessageParts().length; i++) {
 				todoList += model.getServerMessageParts()[i] + " / ";
@@ -165,6 +168,16 @@ public class App_Controller extends Controller<App_Model, App_View> {
 					todo += line + model.getServerMessageParts()[i] + "\n";
 				}
 				view.todoDisplayTA.setText(todo);
+			}
+		});
+
+		view.deleteToDoButton.setOnAction(e -> {
+			// Only execute if a todo ID is selected
+			if (view.todoSelectionCB.getSelectionModel().getSelectedItem() != null) {
+				message = "DeleteToDo" + SEPARATOR + model.getToken() + SEPARATOR
+						+ view.todoSelectionCB.getSelectionModel().getSelectedItem();
+				model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
+				view.todoDisplayTA.setText(model.getServerMessageParts()[1]);
 			}
 		});
 
@@ -210,8 +223,9 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			view.ipTF.setDisable(false);
 			view.portTF.setDisable(false);
 			view.userNameTF.setDisable(false);
-			view.passwordField.setDisable(false);
+			// view.passwordField.setDisable(false);
 			view.createNewAccountButton.setDisable(false);
+			view.changePasswordButton.setDisable(true);
 			// ToDo area:
 			view.taskTitleTF.setDisable(true);
 			view.taskDescriptionTA.setDisable(true);
@@ -219,6 +233,7 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			view.saveTaskButton.setDisable(true);
 			view.todoSelectionCB.setDisable(true);
 			view.listToDosButton.setDisable(true);
+			view.deleteToDoButton.setDisable(true);
 			view.todoDisplayTA.clear();
 			// TODO: disable scroll bar (if implemented)
 			result = false;
@@ -230,8 +245,9 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			view.ipTF.setDisable(true);
 			view.portTF.setDisable(true);
 			view.userNameTF.setDisable(true);
-			view.passwordField.setDisable(true);
+			// view.passwordField.setDisable(true);
 			view.createNewAccountButton.setDisable(true);
+			view.changePasswordButton.setDisable(false);
 			// ToDo area:
 			view.taskTitleTF.setDisable(false);
 			view.taskDescriptionTA.setDisable(false);
@@ -240,6 +256,7 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			// view.saveTaskButton.setDisable(false);
 			view.todoSelectionCB.setDisable(false);
 			view.listToDosButton.setDisable(false);
+			view.deleteToDoButton.setDisable(false);
 			result = true;
 		}
 		return result;
@@ -377,6 +394,7 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		boolean valid = userNameValid && passwordValid && ipValid && portValid;
 		view.logInOutButton.setDisable(!valid);
 		view.createNewAccountButton.setDisable(!valid);
+		view.changePasswordButton.setDisable(!valid);
 	}
 
 	private void enableDisablePingButton() {

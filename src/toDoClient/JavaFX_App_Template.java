@@ -3,9 +3,6 @@ package toDoClient;
 import toDoClient.appClasses.App_Controller;
 import toDoClient.appClasses.App_Model;
 import toDoClient.appClasses.App_View;
-import toDoClient.createAccount.CreateAccount_Controller;
-import toDoClient.createAccount.CreateAccount_Model;
-import toDoClient.createAccount.CreateAccount_View;
 import toDoClient.splashScreen.Splash_Controller;
 import toDoClient.splashScreen.Splash_Model;
 import toDoClient.splashScreen.Splash_View;
@@ -24,7 +21,7 @@ public class JavaFX_App_Template extends Application {
 	private static JavaFX_App_Template mainProgram; // singleton
 	private Splash_View splashView;
 	private App_View view;
-	private CreateAccount_View viewCA;
+//	private CreateAccount_View viewCA;
 
 	private ServiceLocator serviceLocator; // resources, after initialization
 
@@ -133,16 +130,6 @@ public class JavaFX_App_Template extends Application {
 	// Static getter for a reference to the main program object
 	protected static JavaFX_App_Template getMainProgram() {
 		return mainProgram;
-	}
-
-	// Starts the window to create an account
-	public void startCreateAccount() {
-		Stage createAccountStage = new Stage();
-		CreateAccount_Model modelCA = new CreateAccount_Model();
-		viewCA = new CreateAccount_View(createAccountStage, modelCA);
-		new CreateAccount_Controller(this, modelCA, viewCA);
-
-		viewCA.start();
 	}
 
 	// Show hidden window again after for example "Create Account" is done

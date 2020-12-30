@@ -26,6 +26,10 @@
   -fx-border-width: 0px;
 }
 
+#statusLabel {
+  -fx-font-size: 10px;
+}
+
 .addressOK {
   -fx-text-fill: green;
 }
