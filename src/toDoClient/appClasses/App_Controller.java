@@ -3,13 +3,9 @@ package toDoClient.appClasses;
 import toDoClient.JavaFX_App_Template;
 import toDoClient.ServiceLocator;
 import toDoClient.abstractClasses.Controller;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
-import javafx.stage.WindowEvent;
 
 /**
  * Copyright 2015, FHNW, Prof. Dr. Brad Richards. All rights reserved. This code

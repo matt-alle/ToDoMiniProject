@@ -56,6 +56,10 @@ public class ToDoEntry {
 	// only to restore data (had to remove "final")
 	public void setID(int toDoID) {
 		this.toDoID = toDoID;
+		// Correct highest ID if IDs are restored from files (may have gaps after
+		// deleting entries)
+		if (this.toDoID > highestID)
+			highestID = toDoID + 1;
 	}
 
 	@Override

@@ -17,6 +17,10 @@ public class ClientThread extends Thread {
 	BufferedReader in;
 	PrintWriter out;
 
+	// Store User Name and Token of this Client Thread
+	private String currentToken = "";
+	private String currentUserName = "";
+
 	public ClientThread(Socket socket, ServerModel serverModel) {
 		this.socket = socket;
 		this.serverModel = serverModel;
@@ -44,11 +48,14 @@ public class ClientThread extends Thread {
 				try {
 					switch (messageParts[0]) {
 
-					// TODO check token if logged in?
 					case "Ping":
-						if (socket.isConnected())
+						if (socket.isConnected()) {
+							// TODO Token check if logged in
+							// if (serverModel.getCurrentUser() == null)
+							// out.print("Result|true");
+							// else if (messageParts[1].equals(serverModel.getCurrentUser().getUserToken()))
 							out.print("Result|true");
-						else
+						} else
 							out.print("Result|false");
 						break;
 
@@ -78,35 +85,45 @@ public class ClientThread extends Thread {
 						// Check if user and password exist and respond
 						String token = createToken();
 						boolean correctLogin = false;
-						for (int i = 0; i < serverModel.getUserList().size(); i++) {
-							// check user name
-							if (messageParts[1].equals(serverModel.getUserList().get(i).getUserName()))
-								// check password
-								if (messageParts[2].equals(serverModel.getUserList().get(i).getUserPassword())) {
-									correctLogin = true;
-									// temporarily add token to user list
-									serverModel.getUserList().get(i).setUserToken(token);
-									User currentUser = serverModel.getUserList().get(i);
-									// store current user
-									serverModel.setCurrentUser(currentUser);
+						try {
+							// Only if user is not logged in already
+							if (this.currentToken == "") {
+								for (int i = 0; i < serverModel.getUserList().size(); i++) {
+									// check user name
+									if (messageParts[1].equals(serverModel.getUserList().get(i).getUserName())) {
+										// check password
+										if (messageParts[2]
+												.equals(serverModel.getUserList().get(i).getUserPassword())) {
+											correctLogin = true;
+											// temporarily add token to user list
+											serverModel.getUserList().get(i).setUserToken(token);
+											// store current user name and token for this thread
+											this.currentUserName = messageParts[1];
+											this.currentToken = serverModel.getUserList().get(i).getUserToken();
+										}
+									}
 								}
-						}
-						if (correctLogin)
-							out.print("Result|true|" + token);
-						else
+							}
+							if (correctLogin)
+								out.print("Result|true|" + token);
+							else
+								out.print("Result|false");
+						} catch (Exception e) {
 							out.print("Result|false");
+						}
 
 						break;
 
 					case "ChangePassword":
 						// Check if token is valid
-						if (messageParts[1].equals(serverModel.getCurrentUser().getUserToken())) {
+						if (messageParts[1].equals(this.currentToken)) {
 							int l = 0;
 							boolean changed = false;
 							String newPassword = messageParts[2];
 							while (l < serverModel.getUserList().size() && !changed) {
-								if (serverModel.getUserList().get(l).getUserName()
-										.equals(serverModel.getCurrentUser().getUserName())) {
+								// if (serverModel.getUserList().get(l).getUserName()
+								// .equals(serverModel.getCurrentUser().getUserName())) {
+								if (serverModel.getUserList().get(l).getUserName().equals(this.currentUserName)) {
 									serverModel.getUserList().get(l).setUserPassword(newPassword);
 									changed = true;
 								}
@@ -121,12 +138,11 @@ public class ClientThread extends Thread {
 						break;
 
 					case "CreateToDo":
-						if (messageParts[1].equals(serverModel.getCurrentUser().getUserToken())) {
+						if (messageParts[1].equals(this.currentToken)) {
 							String title = messageParts[2];
 							String priority = messageParts[3];
 							String description = messageParts[4];
-							ToDoEntry toDo = new ToDoEntry(title, priority, description,
-									serverModel.getCurrentUser().getUserName());
+							ToDoEntry toDo = new ToDoEntry(title, priority, description, this.currentUserName);
 							serverModel.getToDoList().add(toDo);
 							out.print("Result|true|" + toDo.getToDoID());
 						} else
@@ -135,13 +151,12 @@ public class ClientThread extends Thread {
 						break;
 
 					case "ListToDos":
-						if (messageParts[1].equals(serverModel.getCurrentUser().getUserToken())) {
+						if (messageParts[1].equals(this.currentToken)) {
 							String todoList = "Result|true";
 							boolean listFound = false;
 							// create a string with the IDs of all the existing tasks
 							for (int i = 0; i < serverModel.getToDoList().size(); i++) {
-								if (serverModel.getCurrentUser().getUserName()
-										.equals(serverModel.getToDoList().get(i).getUser())) {
+								if (currentUserName.equals(serverModel.getToDoList().get(i).getUser())) {
 									todoList += ("|" + serverModel.getToDoList().get(i).getToDoID());
 									listFound = true;
 								}
@@ -157,7 +172,7 @@ public class ClientThread extends Thread {
 
 					case "GetToDo":
 						// TODO: chose by rank in list of user except ID?
-						if (messageParts[1].equals(serverModel.getCurrentUser().getUserToken())) {
+						if (messageParts[1].equals(this.currentToken)) {
 							try {
 								int todoID = Integer.valueOf(messageParts[2]); // TODO error handling (crashes if field
 																				// is
@@ -166,9 +181,8 @@ public class ClientThread extends Thread {
 								int i = 0;
 								while (i < serverModel.getToDoList().size() && !found) {
 									// ID has to match and logged in user must be the creator of the todo entry
-									if (todoID == serverModel.getToDoList().get(i).getToDoID()
-											&& serverModel.getToDoList().get(i).getUser()
-													.equals(serverModel.getCurrentUser().getUserName())) {
+									if (todoID == serverModel.getToDoList().get(i).getToDoID() && serverModel
+											.getToDoList().get(i).getUser().equals(this.currentUserName)) {
 										out.print("Result|true|" + serverModel.getToDoList().get(i).toString());
 										found = true;
 									}
@@ -183,19 +197,8 @@ public class ClientThread extends Thread {
 							out.print("Result|false");
 						break;
 
-					case "Logout":
-						try {
-							// Delete the token for this user
-							serverModel.getCurrentUser().setUserToken(null);
-							serverModel.setCurrentUser(null);
-							out.print("Result|true");
-						} catch (Exception e) {
-							out.print("Result|false");
-						}
-						break;
-
 					case "DeleteToDo":
-						if (messageParts[1].equals(serverModel.getCurrentUser().getUserToken())) {
+						if (messageParts[1].equals(this.currentToken)) {
 							int id = Integer.valueOf(messageParts[2]);
 							boolean deleted = false;
 							int k = 0;
@@ -213,6 +216,21 @@ public class ClientThread extends Thread {
 								out.print("Result|false");
 						} else
 							out.print("Result|false");
+						break;
+
+					case "Logout":
+						try {
+							// Only if user is logged in
+							if (this.currentToken != "") {
+								// Delete the token for this user
+								this.currentToken = "";
+								this.currentUserName = "";
+								out.print("Result|true");
+							} else
+								out.print("Result|false");
+						} catch (Exception e) {
+							out.print("Result|false");
+						}
 						break;
 
 					default:
@@ -234,7 +252,9 @@ public class ClientThread extends Thread {
 				message = in.readLine();
 			}
 
-		} catch (IOException e) {
+		} catch (
+
+		IOException e) {
 			out.print("Result|false");
 			out.flush();
 			logger.warning(e.toString());

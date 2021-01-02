@@ -151,7 +151,7 @@ public class App_View extends View<App_Model> {
 		GridPane.setMargin(changePasswordButton, new Insets(5, 5, 5, 5));
 		GridPane.setMargin(createNewAccountButton, new Insets(5, 5, 5, 5));
 		GridPane.setMargin(statusTitle, new Insets(5, 5, 5, 0));
-	//	GridPane.setMargin(statusLabel, new Insets(0, 0, 0, 0));
+		// GridPane.setMargin(statusLabel, new Insets(0, 0, 0, 0));
 
 		pingButton.setPrefWidth(70);
 		logInOutButton.setPrefWidth(70);
@@ -213,6 +213,8 @@ public class App_View extends View<App_Model> {
 		deleteToDoButton.setPrefWidth(90);
 		selectID.setPrefWidth(50);
 		todoSelectionCB.setPrefWidth(60);
+		taskDescriptionTA.setPrefHeight(100);
+		todoDisplayTA.setPrefWidth(120);
 
 		return pane;
 	}

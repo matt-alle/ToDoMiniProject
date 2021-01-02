@@ -12,7 +12,6 @@ public class ServerModel {
 
 	private ArrayList<User> userList = new ArrayList<>();
 	private ArrayList<ToDoEntry> toDoList = new ArrayList<>();
-	private User currentUser; // temporary store the user who is currently logged in
 
 	private static String USERS = "Users.sav";
 	private static String TODO = "ToDo.sav";
@@ -30,13 +29,6 @@ public class ServerModel {
 		return toDoList;
 	}
 
-	public void setCurrentUser(User currentUser) {
-		this.currentUser = currentUser;
-	}
-
-	public User getCurrentUser() {
-		return this.currentUser;
-	}
 
 	/**
 	 * Save and restore server data
@@ -52,7 +44,6 @@ public class ServerModel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// System.out.println("saved");
 	}
 
 	// Token is not saved - every user is logged out if the server crashes
@@ -100,14 +91,14 @@ public class ServerModel {
 	public User readUser(String line) {
 		String[] attributes = line.split(SEPARATOR);
 		int userID = -999;
-		String userName = "-not found-";
-		String userPassword = "X";
+		String userName = "-";
+		String userPassword = "-";
 		try {
 			userID = Integer.valueOf(attributes[0]);
 			userName = attributes[1];
 			userPassword = attributes[2];
 		} catch (Exception e) {
-			userName = "-Error in Line-";  // TODO error handling
+			userName = "-Error in Line-"; // TODO error handling
 		}
 		User user = new User(userName, userPassword, null);
 		user.setID(userID); // restore ID
@@ -134,7 +125,7 @@ public class ServerModel {
 	public ToDoEntry readToDo(String line) {
 		String[] attributes = line.split(SEPARATOR);
 		int todoID = -999;
-		String todoTitle = "-not found-";
+		String todoTitle = "-";
 		String todoPriority = "-";
 		String todoDescription = "-";
 		String todoUser = "-";
