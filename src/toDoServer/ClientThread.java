@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class ClientThread extends Thread {
@@ -171,7 +170,6 @@ public class ClientThread extends Thread {
 						break;
 
 					case "GetToDo":
-						// TODO: chose by rank in list of user except ID?
 						if (messageParts[1].equals(this.currentToken)) {
 							try {
 								int todoID = Integer.valueOf(messageParts[2]); // TODO error handling (crashes if field
@@ -183,7 +181,8 @@ public class ClientThread extends Thread {
 									// ID has to match and logged in user must be the creator of the todo entry
 									if (todoID == serverModel.getToDoList().get(i).getToDoID() && serverModel
 											.getToDoList().get(i).getUser().equals(this.currentUserName)) {
-										out.print("Result|true|" + serverModel.getToDoList().get(i).toString());
+										out.print("Result|true|" + todoID + "|"
+												+ serverModel.getToDoList().get(i).toString());
 										found = true;
 									}
 									i++;

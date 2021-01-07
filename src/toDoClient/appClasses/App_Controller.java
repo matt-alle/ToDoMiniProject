@@ -3,8 +3,6 @@ package toDoClient.appClasses;
 import toDoClient.JavaFX_App_Template;
 import toDoClient.ServiceLocator;
 import toDoClient.abstractClasses.Controller;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 
 /**
@@ -52,7 +50,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		validateUserName(view.userNameTF.getText());
 		validateIP(view.ipTF.getText());
 		validatePort(view.portTF.getText());
-
 
 		/**
 		 * --------------------------------------------------------------------------------------------------
@@ -104,7 +101,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 					}
 				}
 				if (logInOutSwitch == true) {
-					// TODO: maybe automatically log out when window is closed
 					message = "Logout";
 					model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
 					loggedIn = switchLoginLogoutGUI(loggedIn);
@@ -159,7 +155,7 @@ public class App_Controller extends Controller<App_Model, App_View> {
 						+ view.todoSelectionCB.getSelectionModel().getSelectedItem();
 				model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
 				String todo = "";
-				String line = "====================================================\n";
+				String line = "###################################################################\n";
 				for (int i = 2; i < model.getServerMessageParts().length; i++) {
 					todo += line + model.getServerMessageParts()[i] + "\n";
 				}
@@ -189,24 +185,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		view.taskTitleTF.textProperty().addListener((observable, oldValue, newValue) -> validateTitle(newValue));
 		view.taskDescriptionTA.textProperty()
 				.addListener((observable, oldValue, newValue) -> validateDescription(newValue));
-		view.scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
-			public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-				int x = (int) old_val.intValue() / 2;
-				int y = (int) new_val.intValue() / 2;
-				System.out.println(x);
-				System.out.println(y);
-				// TODO (not really working yet) ----
-				message = "GetToDo" + SEPARATOR + model.getToken() + SEPARATOR + x;
-				model.sendMessageToServer(view.ipTF.getText(), Integer.valueOf(view.portTF.getText()), message);
-				String todo = "";
-				String line = "====================================================\n";
-				for (int i = 2; i < model.getServerMessageParts().length; i++) {
-					todo += line + model.getServerMessageParts()[i] + "\n";
-				}
-				view.todoDisplayTA.setText(todo);
-				// ----
-			}
-		});
 	}
 
 	// Change GUI depending on if user is logged in or logged out
@@ -231,7 +209,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 			view.listToDosButton.setDisable(true);
 			view.deleteToDoButton.setDisable(true);
 			view.todoDisplayTA.clear();
-			// TODO: disable scroll bar (if implemented)
 			result = false;
 		}
 		// If user not logged in, do:
@@ -291,7 +268,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		enableDisableButton();
 	}
 
-	// TODO: specify more
 	private void validatePassword(String newValue) {
 		boolean valid = false;
 		if (newValue.length() >= 3 && newValue.length() <= 20) {

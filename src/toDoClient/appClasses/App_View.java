@@ -16,11 +16,8 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollBar;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -46,7 +43,6 @@ public class App_View extends View<App_Model> {
 	TextField portTF;
 	TextField userNameTF;
 	TextField taskTitleTF;
-//	TextField todoIDTF;
 
 	PasswordField passwordField;
 
@@ -130,6 +126,7 @@ public class App_View extends View<App_Model> {
 
 		createNewAccountButton.setId("createNewAccountButton");
 		statusLabel.setId("statusLabel");
+		changePasswordButton.setId("changePasswordButton");
 
 		pane.add(ipTF, 0, 0);
 		pane.add(portTF, 1, 0);
@@ -156,7 +153,7 @@ public class App_View extends View<App_Model> {
 		pingButton.setPrefWidth(70);
 		logInOutButton.setPrefWidth(70);
 		createNewAccountButton.setPrefWidth(140);
-		changePasswordButton.setPrefWidth(70);
+		changePasswordButton.setPrefWidth(120);
 
 		return pane;
 	}
@@ -191,7 +188,6 @@ public class App_View extends View<App_Model> {
 		pane.add(selectID, 1, 4);
 		pane.add(todoSelectionCB, 2, 4);
 		pane.add(deleteToDoButton, 3, 4);
-		// pane.add(scrollBar, 3, 4);
 		pane.add(todoDisplayTA, 0, 5, 4, 1);
 
 		GridPane.setMargin(taskAreaTitle, new Insets(5, 5, 5, 5));
@@ -210,11 +206,12 @@ public class App_View extends View<App_Model> {
 		priorityCB.setPrefWidth(90);
 		saveTaskButton.setPrefWidth(140);
 		listToDosButton.setPrefWidth(140);
-		deleteToDoButton.setPrefWidth(90);
+		deleteToDoButton.setPrefWidth(120);
 		selectID.setPrefWidth(50);
 		todoSelectionCB.setPrefWidth(60);
 		taskDescriptionTA.setPrefHeight(100);
 		todoDisplayTA.setPrefWidth(120);
+		todoDisplayTA.setPrefHeight(200);
 
 		return pane;
 	}
@@ -248,6 +245,8 @@ public class App_View extends View<App_Model> {
 		saveTaskButton.setText(t.getString("button.saveTaskButton"));
 		pingButton.setText(t.getString("button.pingButton"));
 		listToDosButton.setText(t.getString("button.listToDosButton"));
+		changePasswordButton.setText(t.getString("button.changePasswordButton"));
+		deleteToDoButton.setText(t.getString("button.deleteToDoButton"));
 
 		stage.setTitle(t.getString("program.name"));
 	}
