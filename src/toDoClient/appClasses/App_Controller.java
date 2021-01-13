@@ -364,9 +364,12 @@ public class App_Controller extends Controller<App_Model, App_View> {
 
 	private void enableDisableButton() {
 		boolean valid = userNameValid && passwordValid && ipValid && portValid;
-		view.logInOutButton.setDisable(!valid);
-		view.createNewAccountButton.setDisable(!valid);
-		view.changePasswordButton.setDisable(!valid);
+		if (!loggedIn) {
+			view.logInOutButton.setDisable(!valid);
+			view.createNewAccountButton.setDisable(!valid);
+		}
+		if (loggedIn)
+			view.changePasswordButton.setDisable(!valid);
 	}
 
 	private void enableDisablePingButton() {

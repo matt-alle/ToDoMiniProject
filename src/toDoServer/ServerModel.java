@@ -18,7 +18,7 @@ public class ServerModel {
 	private static String SEPARATOR = ";;;";
 
 	public ServerModel() {
-		System.out.println("Initialized new serverModel");
+		
 	}
 
 	public ArrayList<User> getUserList() {
@@ -28,7 +28,6 @@ public class ServerModel {
 	public ArrayList<ToDoEntry> getToDoList() {
 		return toDoList;
 	}
-
 
 	/**
 	 * Save and restore server data

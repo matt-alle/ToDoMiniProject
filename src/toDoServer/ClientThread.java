@@ -49,11 +49,19 @@ public class ClientThread extends Thread {
 
 					case "Ping":
 						if (socket.isConnected()) {
-							// TODO Token check if logged in
-							// if (serverModel.getCurrentUser() == null)
-							// out.print("Result|true");
-							// else if (messageParts[1].equals(serverModel.getCurrentUser().getUserToken()))
-							out.print("Result|true");
+							// Check token if user logged in
+							try {
+								if (messageParts[1].equals(this.currentToken)) {
+									out.print("Result|true");
+								} else
+									out.print("Result|false");
+								// Catch if messageParts[1] does not exist (user logged out - no token)
+							} catch (ArrayIndexOutOfBoundsException e) {
+								if (currentUserName == "") {
+									out.print("Result|true");
+								} else
+									out.print("Result|false");
+							}
 						} else
 							out.print("Result|false");
 						break;
@@ -61,8 +69,6 @@ public class ClientThread extends Thread {
 					case "CreateLogin":
 						String userName = messageParts[1];
 						String userPassword = messageParts[2];
-
-						// TODO also disable if only user name is the same?
 
 						// Check it user name is already taken
 						// -> if not, create and save user account
@@ -72,7 +78,7 @@ public class ClientThread extends Thread {
 								freeUserName = false;
 						}
 						if (freeUserName) {
-							// Create and add user without token (TODO encrypt password?)
+							// Create and add user without token
 							User user = new User(userName, userPassword, null);
 							serverModel.getUserList().add(user);
 						}
@@ -243,6 +249,7 @@ public class ClientThread extends Thread {
 					// if anything goes wrong -> send "false"
 				} catch (Exception ex) {
 					out.print("Result|false");
+					out.print("\n");
 					out.flush();
 					logger.warning(ex.toString());
 				}
