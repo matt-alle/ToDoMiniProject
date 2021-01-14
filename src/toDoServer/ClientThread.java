@@ -126,8 +126,6 @@ public class ClientThread extends Thread {
 							boolean changed = false;
 							String newPassword = messageParts[2];
 							while (l < serverModel.getUserList().size() && !changed) {
-								// if (serverModel.getUserList().get(l).getUserName()
-								// .equals(serverModel.getCurrentUser().getUserName())) {
 								if (serverModel.getUserList().get(l).getUserName().equals(this.currentUserName)) {
 									serverModel.getUserList().get(l).setUserPassword(newPassword);
 									changed = true;
@@ -178,9 +176,7 @@ public class ClientThread extends Thread {
 					case "GetToDo":
 						if (messageParts[1].equals(this.currentToken)) {
 							try {
-								int todoID = Integer.valueOf(messageParts[2]); // TODO error handling (crashes if field
-																				// is
-																				// empty)
+								int todoID = Integer.valueOf(messageParts[2]);
 								boolean found = false;
 								int i = 0;
 								while (i < serverModel.getToDoList().size() && !found) {
@@ -265,7 +261,7 @@ public class ClientThread extends Thread {
 			out.flush();
 			logger.warning(e.toString());
 		}
-		// TODO: move somewhere else? (here saves after client is closed)
+		// Save data if client is terminated
 		serverModel.writeSaveFileUsers();
 		serverModel.writeSaveFileToDo();
 	}

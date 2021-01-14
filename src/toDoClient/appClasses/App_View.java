@@ -113,9 +113,9 @@ public class App_View extends View<App_Model> {
 	private GridPane createAccountArea() {
 		GridPane pane = new GridPane();
 
-		ipTF = new TextField("127.0.0.1"); // change later TODO
-		portTF = new TextField("50001"); // change later
-		userNameTF = new TextField("aa.bb@cc.dd");
+		ipTF = new TextField("127.0.0.1");
+		portTF = new TextField("50001");
+		userNameTF = new TextField();
 		passwordField = new PasswordField();
 		logInOutButton = new Button();
 		createNewAccountButton = new Button();

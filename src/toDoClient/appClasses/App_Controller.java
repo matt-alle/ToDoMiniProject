@@ -124,7 +124,6 @@ public class App_Controller extends Controller<App_Model, App_View> {
 		view.saveTaskButton.setOnAction(e -> {
 			if (view.taskDescriptionTA.getText() == "")
 				view.taskDescriptionTA.setText("-");
-			System.out.println("descr: " + view.taskDescriptionTA.getText());
 			message = "CreateToDo" + SEPARATOR + model.getToken() + SEPARATOR + view.taskTitleTF.getText() + SEPARATOR
 					+ view.priorityCB.getSelectionModel().getSelectedItem() + SEPARATOR
 					+ view.taskDescriptionTA.getText();

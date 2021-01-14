@@ -35,7 +35,7 @@ public class Splash_Model extends Model {
 
 			// Create the service locator to hold our resources
 			serviceLocator = ServiceLocator.getServiceLocator();
-			TimeUnit.MILLISECONDS.sleep(200); // just for fun -> TODO: remove later
+			TimeUnit.MILLISECONDS.sleep(200); // just for fun (to actually see the loading screen)
 			this.updateProgress(2, 6);
 
 			// Initialize the resources in the service locator

@@ -97,7 +97,7 @@ public class ServerModel {
 			userName = attributes[1];
 			userPassword = attributes[2];
 		} catch (Exception e) {
-			userName = "-Error in Line-"; // TODO error handling
+			userName = "-Error in Line-";
 		}
 		User user = new User(userName, userPassword, null);
 		user.setID(userID); // restore ID
